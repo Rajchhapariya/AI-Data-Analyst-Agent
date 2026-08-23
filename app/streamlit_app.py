@@ -199,6 +199,28 @@ CUSTOM_CSS = """
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 
+def _df_to_markdown_table(df: pd.DataFrame, include_index: bool = False) -> str:
+    """Converts a DataFrame to Markdown table without requiring tabulate dependency."""
+    if df is None or df.empty:
+        return "_No data to display._"
+    try:
+        return df.to_markdown(index=include_index)
+    except Exception:
+        # Pure-Python robust fallback
+        work_df = df.copy()
+        if include_index:
+            work_df = work_df.reset_index()
+        headers = [str(c) for c in work_df.columns]
+        lines = [
+            "| " + " | ".join(headers) + " |",
+            "| " + " | ".join(["---"] * len(headers)) + " |"
+        ]
+        for _, row in work_df.iterrows():
+            row_vals = [str(v).replace("\n", " ") for v in row.values]
+            lines.append("| " + " | ".join(row_vals) + " |")
+        return "\n".join(lines)
+
+
 # ==============================================================================
 # Helper: Export AgentTrace as Formatted Markdown Report
 # ==============================================================================
@@ -260,7 +282,7 @@ def format_trace_as_markdown(trace: AgentTrace, dataset_name: str = "superstore_
             if rows:
                 df_rows = pd.DataFrame(rows)
                 md_lines.append(f"### Query Results ({len(rows)} rows)")
-                md_lines.append(df_rows.to_markdown(index=False))
+                md_lines.append(_df_to_markdown_table(df_rows, include_index=False))
             else:
                 md_lines.append("_Query executed successfully but returned 0 rows._")
         elif not trace.tool_result.success:
@@ -279,12 +301,12 @@ def format_trace_as_markdown(trace: AgentTrace, dataset_name: str = "superstore_
             summary = trace.tool_result.data["summary_table"]
             if summary:
                 md_lines.append("### Underlying Aggregated Data")
-                md_lines.append(pd.DataFrame(summary).to_markdown(index=False))
+                md_lines.append(_df_to_markdown_table(pd.DataFrame(summary), include_index=False))
     elif tool_name == "summary_stats":
         if trace.tool_result.data and "column_stats" in trace.tool_result.data:
             stats = trace.tool_result.data["column_stats"]
             md_lines.append("### Descriptive Statistics")
-            md_lines.append(pd.DataFrame(stats).T.to_markdown())
+            md_lines.append(_df_to_markdown_table(pd.DataFrame(stats).T, include_index=True))
 
     md_lines.extend([
         f"",

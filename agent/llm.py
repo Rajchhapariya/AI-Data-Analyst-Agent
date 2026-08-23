@@ -38,17 +38,40 @@ class LLMClient:
         self.api_key = self._resolve_api_key()
 
     def _resolve_api_key(self) -> Optional[str]:
-        """Resolves the appropriate API key based on the model provider."""
+        """Resolves the appropriate API key based on the model provider, checking os.environ and st.secrets."""
+        def _get_val(k: str) -> Optional[str]:
+            val = os.getenv(k)
+            if val and val.strip():
+                return val.strip()
+            # Check Streamlit Cloud secrets if running inside Streamlit Cloud
+            try:
+                import streamlit as st
+                if hasattr(st, "secrets") and k in st.secrets:
+                    secret_val = str(st.secrets[k]).strip()
+                    if secret_val:
+                        return secret_val
+            except Exception:
+                pass
+            return None
+
         if "gemini" in self.model_name.lower():
-            return os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+            return _get_val("GEMINI_API_KEY") or _get_val("GOOGLE_API_KEY")
         elif "openai" in self.model_name.lower() or "gpt" in self.model_name.lower():
-            return os.getenv("OPENAI_API_KEY")
+            return _get_val("OPENAI_API_KEY")
         elif "anthropic" in self.model_name.lower() or "claude" in self.model_name.lower():
-            return os.getenv("ANTHROPIC_API_KEY")
-        return None
+            return _get_val("ANTHROPIC_API_KEY")
+        return _get_val("OPENAI_API_KEY")
 
     def generate_text(self, prompt: str, system_prompt: Optional[str] = None) -> str:
         """Generates plain text response from the LLM with exponential backoff for rate limits."""
+        api_key = self.api_key or self._resolve_api_key()
+        if not api_key:
+            raise ValueError(
+                f"Missing API key for model '{self.model_name}'. "
+                "If running locally, define OPENAI_API_KEY in your .env file. "
+                "If deployed on Streamlit Cloud, add OPENAI_API_KEY = \"sk-...\" in App Settings ➔ Secrets."
+            )
+
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
@@ -64,7 +87,7 @@ class LLMClient:
                     messages=messages,
                     temperature=self.temperature,
                     max_tokens=config.max_tokens,
-                    api_key=self.api_key,
+                    api_key=api_key,
                     timeout=config.request_timeout_seconds
                 )
                 return response.choices[0].message.content or ""
@@ -89,7 +112,7 @@ class LLMClient:
                             messages=messages,
                             temperature=self.temperature,
                             max_tokens=config.max_tokens,
-                            api_key=self.api_key,
+                            api_key=api_key,
                             timeout=config.request_timeout_seconds
                         )
                         return response.choices[0].message.content or ""

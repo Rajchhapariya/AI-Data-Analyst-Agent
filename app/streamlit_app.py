@@ -380,6 +380,17 @@ with st.sidebar:
     st.subheader("⚙️ System State")
     dataset_tag = " `[Custom Upload]`" if is_custom_active else ""
     st.caption(f"**Model**: `{config.default_model}`\n\n**Dataset**: `{active_filename}`{dataset_tag}\n\n**Shape**: {len(df_raw):,} rows × {len(df_raw.columns)} cols")
+    
+    # Check for API key availability on Streamlit Cloud / local
+    has_api_key = bool(
+        os.getenv("OPENAI_API_KEY") or
+        os.getenv("GEMINI_API_KEY") or
+        os.getenv("ANTHROPIC_API_KEY") or
+        (hasattr(st, "secrets") and any(k in st.secrets for k in ["OPENAI_API_KEY", "GEMINI_API_KEY", "ANTHROPIC_API_KEY"]))
+    )
+    if not has_api_key:
+        st.warning("⚠️ **API Key Missing**: In Streamlit Cloud, go to **App Settings ➔ Secrets** and add:\n\n```toml\nOPENAI_API_KEY = \"sk-...\"\n```")
+
     st.divider()
     
     st.subheader("💡 Demo Queries")
@@ -468,9 +479,13 @@ with tab_chat:
         st.session_state["query_text"] = query_to_run
         
         with st.spinner("Analyzing question, evaluating dimensions, and executing tool..."):
-            trace: AgentTrace = agent.ask(query_to_run)
-            st.session_state["last_trace"] = trace
-            st.session_state["last_trace_dataset"] = active_filename
+            try:
+                trace: AgentTrace = agent.ask(query_to_run)
+                st.session_state["last_trace"] = trace
+                st.session_state["last_trace_dataset"] = active_filename
+            except Exception as ex:
+                st.error(f"❌ **Execution Error**: {ex}")
+                trace = None
     elif st.session_state.get("last_trace") is not None and st.session_state.get("last_trace_dataset") == active_filename:
         trace = st.session_state["last_trace"]
     else:

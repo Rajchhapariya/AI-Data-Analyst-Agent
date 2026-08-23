@@ -443,21 +443,24 @@ tab_chat, tab_profiler, tab_eval = st.tabs([
 # TAB 1: MAIN DEMO — REASONING & EXECUTION PIPELINE
 # ==============================================================================
 with tab_chat:
-    # Form wrapper enables natural Enter-key submission
-    with st.form(key="query_form", clear_on_submit=False):
-        col_input, col_btn = st.columns([5, 1])
-        with col_input:
-            user_query = st.text_input(
-                "Natural Language Question:",
-                placeholder="Ask a business, visual, or statistical question about the dataset...",
-                label_visibility="collapsed",
-                key="user_query_input"
-            )
-        with col_btn:
-            run_query = st.form_submit_button("🚀 Analyze", type="primary", width="stretch")
+    def handle_enter_submission():
+        st.session_state["submitted_via_enter"] = True
+
+    col_input, col_btn = st.columns([5, 1])
+    with col_input:
+        user_query = st.text_input(
+            "Natural Language Question:",
+            placeholder="Ask a business, visual, or statistical question about the dataset...",
+            label_visibility="collapsed",
+            key="user_query_input",
+            on_change=handle_enter_submission
+        )
+    with col_btn:
+        run_query = st.button("🚀 Analyze", type="primary", width="stretch", key="btn_analyze_query")
 
     auto_submit = st.session_state.pop("auto_submit", False)
-    should_execute = (run_query or auto_submit) and bool(user_query and user_query.strip())
+    enter_submit = st.session_state.pop("submitted_via_enter", False)
+    should_execute = (run_query or auto_submit or enter_submit) and bool(user_query and user_query.strip())
 
     if should_execute:
         query_to_run = user_query.strip()

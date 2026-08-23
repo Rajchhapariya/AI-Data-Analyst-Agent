@@ -177,8 +177,8 @@ Across all stress tests, there were **zero observed instances of Mode (c) (false
    - Verified in Part 2 of `tests/robustness_check.py`: Sequential ellipsis (`"What about 2023?"`) and pronoun references (`"Now show it as a chart instead"`) correctly trigger `clarify` because the agent maintains zero ghost conversation buffers across invocations.
 2. **Single-Tool Execution per Turn**:
    - The router executes exactly one tool per query (`query_data`, `plot_chart`, `summary_stats`, or `clarify`). It does not perform multi-step agentic DAG decomposition (e.g. generating a SQL table and immediately feeding it into a plotting tool in the same turn).
-3. **Single-Table Historical Scope**:
-   - The data execution layer operates strictly against the registered `dataset` table (`data/superstore_sales.csv`), precluding multi-table relational joins or live streaming telemetry.
+3. **Single-Table Historical Scope (with Dynamic CSV Replacement)**:
+   - The in-memory DuckDB engine registers a single active `dataset` table per session (defaulting to `data/superstore_sales.csv`), precluding multi-table relational joins across separate databases or live streaming telemetry. However, users can dynamically swap the active dataset at runtime via the Streamlit CSV uploader with instant on-the-fly profiling.
 
 ---
 

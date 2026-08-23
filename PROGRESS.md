@@ -49,6 +49,11 @@
 - **Part 2 (Multi-Turn Stateless Boundary)**: 3/3 sequences passed (zero state leakage or ghost context retention on consecutive calls).
 - **Part 3 (Compound Reasoning Limits)**: Tested multi-hop boundary (`MH-01`, `MH-02`, `MH-03`). Verified zero hallucinated partial answers (Mode c). Documented single-tool router constraints and honest error propagation.
 
+### 5. Dynamic CSV Uploader & 1-Click Markdown Trace Export
+- **Dynamic CSV Ingestion**: Built a drag-and-drop file uploader in `app/streamlit_app.py` allowing instant querying of custom datasets without restarting the server. Profiler dynamically adapts schema context, temporal anchors, and date granularities.
+- **Edge-Case Hardening**: Added explicit guards rejecting empty dataframes, header-only files, zero-column uploads, and graceful handling of datasets without date columns.
+- **Executive Markdown Export**: Added 1-click `📥 Download Result (.md)` button in Streamlit chat to export complete query telemetry (`AgentTrace`), dimensional audits, raw SQL outputs, and verified executive narratives.
+
 ---
 
 ## 📁 Repository Structure & Artifacts

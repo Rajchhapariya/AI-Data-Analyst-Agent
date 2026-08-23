@@ -44,6 +44,10 @@
   > 2. **Step 2 DuckDB AST Guard**: It generates and executes a read-only SQL aggregation on DuckDB with strict AST blacklists blocking any mutations.
   > 3. **Step 3 Numerical Faithfulness Guard**: This green verification badge confirms that our post-synthesis validator parsed every cited number and cross-checked it against the raw data matrix, ensuring zero hallucinated figures."*
 
+- **Action**: In Tab 1, scroll to the bottom of the execution trace and point to the **`📥 Download Result (.md)`** button.
+- **What to say**:
+  > *"Users and BI auditors can also export any analytical result into an executive Markdown report with one click—capturing the full telemetry trace, prompt context, and verified data tables for persistence."*
+
 ---
 
 ### 3. Visual Analytics & Descriptive Statistics (1:15 – 1:55)

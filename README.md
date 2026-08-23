@@ -112,12 +112,12 @@ Many commercial LLM data analyst demos follow an insecure and brittle design: th
 
 The agent operates over a realistic **Global Retail / Superstore Sales** dataset containing **7,500 transactions** across 4 years (2021–2024), 4 global regions, 3 categories, 17 sub-categories, and 40 enterprise customers.
 
-### Automated Quality Profiling (`agent/profiler.py`)
+### Automated Quality Profiling & Dynamic CSV Ingestion (`agent/profiler.py`)
 Before receiving user queries, the agent computes an in-memory schema and data quality audit:
-- **Total Rows**: `7,500`
-- **Total Columns**: `20` (`order_id`, `order_date`, `ship_date`, `ship_mode`, `customer_id`, `customer_name`, `segment`, `city`, `state`, `region`, `category`, `sub_category`, `product_id`, `product_name`, `sales`, `quantity`, `discount`, `profit`, `shipping_cost`, `order_priority`)
+- **Default Dataset**: `7,500` rows × `20` columns (`order_id`, `order_date`, `ship_date`, `ship_mode`, `customer_id`, `customer_name`, `segment`, `city`, `state`, `region`, `category`, `sub_category`, `product_id`, `product_name`, `sales`, `quantity`, `discount`, `profit`, `shipping_cost`, `order_priority`).
 - **Missing Value Audit**: Detected 38 intentional nulls in `discount` and 66 in `shipping_cost` to test LLM robustness.
 - **Dynamic Prompt Injection**: The profiler formats a high-density, token-efficient schema context block injected into the Router's system prompt.
+- **Custom CSV Upload Support**: The agent is completely dataset-agnostic. Users can upload any custom CSV via the Streamlit sidebar—triggering instant on-the-fly profiling, dynamic schema re-indexing, temporal reference anchor re-calculation, and generic date-granularity adaptation with zero server restarts.
 
 ---
 
@@ -227,6 +227,8 @@ For complete technical deep-dives into edge cases and trade-offs, see [`evaluati
 - **Tab 1: Agent Analyst Chat**: Conversational interface with quick-prompt chips, step-by-step reasoning drawer, Plotly chart rendering, interactive SQL data tables, and faithfulness badges.
 - **Tab 2: Dataset Profiler & Quality**: KPI metric cards (Revenue, Profit, Transactions, Memory), schema table with missing value audit, and dynamic column distribution charts.
 - **Tab 3: Benchmark & Evaluation Studio**: 1-click evaluation runner, Precision/Recall/F1 tables, and question-level pass/fail audits.
+- **📁 Dynamic CSV Uploader (Sidebar)**: Drag-and-drop any custom CSV dataset to dynamically profile, query, plot, and summarize custom data with automated validation against empty or malformed files.
+- **📥 1-Click Markdown Report Export**: Download complete inspectable telemetry (`AgentTrace`), dimensional audits, raw SQL outputs, and verified executive narratives as clean `.md` reports.
 
 ```bash
 streamlit run app/streamlit_app.py

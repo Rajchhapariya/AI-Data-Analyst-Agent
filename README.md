@@ -278,6 +278,20 @@ python -m agent.profiler
 - **Run Robustness & Multi-Hop Suite**: `python tests/robustness_check.py`
 - **Run Full Unit & Regression Tests**: `pytest -v`
 
+### 5. Streamlit Community Cloud Deployment
+1. Fork or push this repository to your GitHub account.
+2. Deploy to [share.streamlit.io](https://share.streamlit.io/) with `app/streamlit_app.py` as the entrypoint.
+3. In your Streamlit Cloud dashboard, navigate to **App Settings ➔ Secrets** and configure:
+   ```toml
+   OPENAI_API_KEY = "sk-proj-your-key-here"
+   ```
+4. The application automatically detects `st.secrets` alongside local `.env` variables with zero code changes.
+
+---
+
+## 🎬 Demo Recording Guide
+For presenting this project to admissions committees, professors, or technical reviewers, refer to the step-by-step 1–2 minute recording script in [`demo_recording_checklist.md`](demo_recording_checklist.md).
+
 ---
 
 ## 💡 What I Learned & Future Work

@@ -60,24 +60,40 @@
 - **Cross-Platform UTF-8 Console Safety**: Reconfigured `sys.stdout` to UTF-8 on Windows environments, eliminating `UnicodeEncodeError` crashes when rendering emojis (`🔍`, `⚡`, `📈`, `🛡️`).
 - **Added Regression Suite**: Added 4 dedicated tests in `tests/test_cli.py` bringing the unit test suite to 14/14 passing tests.
 
+### 7. 100% Docstring Coverage & Open-Source Readability Audit
+- **Standardized Google-Style Docstrings**: Executed an AST-based documentation audit achieving 100% docstring coverage across all core classes, constructors, methods, and tool entry points.
+- **Type Annotations**: Enforced explicit PEP 484 return and parameter type annotations throughout `agent/`, `evaluation/`, and `tests/` for full `mypy` and IDE static-analysis compatibility.
+
+### 8. Streamlit Cloud Deployment & Pure-Python Markdown Fallback
+- **`st.secrets` Multi-Provider Fallback**: Updated `agent/llm.py` to seamlessly resolve `OPENAI_API_KEY`, `GEMINI_API_KEY`, and `ANTHROPIC_API_KEY` from Streamlit Community Cloud secrets (`st.secrets`) alongside local `.env` variables.
+- **Pure-Python Markdown Formatter**: Replaced `df.to_markdown()` with a robust in-house `_df_to_markdown_table()` in `app/streamlit_app.py` ensuring zero `ImportError` runtime crashes even when third-party `tabulate` is absent. Added `tabulate>=0.9.0` to `requirements.txt`.
+- **UI Error Guard**: Added visual sidebar warning banners when API keys are unconfigured and wrapped pipeline calls in friendly UI error alerts.
+
+### 9. 1–2 Minute Admissions Demo Recording & Checklist
+- **Recording Guide**: Created `demo_recording_checklist.md` with explicit timecoded segments (0:00–2:00), spoken engineering highlights, and 1-click fallback queries.
+- **Captured Portfolio Walkthrough**: Generated a full screen recording (`recordings/full_portfolio_demo_1787466678366.webp`) and documented all visual states in `walkthrough.md`.
+
 ---
 
 ## 📁 Repository Structure & Artifacts
 
 - `.env.example`: Template for required API keys (`OPENAI_API_KEY`, optional `GEMINI_API_KEY`).
-- `.gitignore`: Production git ignore protecting secrets, cache, and scratch directories.
+- `.gitignore`: Production git ignore protecting secrets, cache, local video recordings, and scratch directories.
 - `LICENSE`: Permissive MIT Open-Source License.
-- `requirements.txt`: Curated Python dependencies.
+- `requirements.txt`: Curated Python dependencies including DuckDB, Plotly, LiteLLM, and Tabulate.
+- `demo_recording_checklist.md`: Step-by-step 1–2 minute recording script and pre-flight checklist.
+- `walkthrough.md`: Visual walkthrough documentation with embedded video recording and UI screenshots.
+- `recordings/`: Local video recordings directory (git-ignored).
 - `agent/`:
   - `config.py`: Configuration & 19 disallowed SQL keywords.
   - `schema.py`: Strict Pydantic models for tools, router decisions, and `AgentTrace`.
-  - `llm.py`: Provider abstraction with exponential backoff retry.
+  - `llm.py`: Provider abstraction supporting `.env` and `st.secrets` with exponential backoff retry.
   - `profiler.py`: Dataset profiler with dynamic Temporal Reference Anchors.
   - `router.py`: Inspectable semantic planner with Metric/Timeframe dimensional audits.
   - `synthesizer.py`: Grounded narrative generator + Numerical Faithfulness Guard.
   - `pipeline.py`: Main `DataAnalystAgent` orchestrator.
   - `tools/`: Constrained implementations (`query_tool.py`, `chart_tool.py`, `stats_tool.py`, `clarify_tool.py`).
-- `app/streamlit_app.py`: Reasoning-first Streamlit web interface with CSV uploader & Markdown export.
+- `app/streamlit_app.py`: Reasoning-first Streamlit web interface with CSV uploader, 1-click Markdown export, and cloud secret auto-detection.
 - `cli.py`: Interactive Rich terminal interface with spinners, syntax-highlighted SQL, and trace panels.
 - `evaluation/`:
   - `benchmark_dataset.json`: 20 ground-truth test cases.

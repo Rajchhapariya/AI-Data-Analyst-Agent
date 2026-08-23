@@ -386,6 +386,7 @@ with st.sidebar:
     st.caption("Select a query to trigger 1-click execution:")
 
     examples = [
+        ("SQL: Highest Sales Region", "Which region has the highest total sales?"),
         ("SQL: Top 5 Sub-Categories", "What are the top 5 sub-categories by total sales volume?"),
         ("SQL: 2023 Regional Profit", "What was the total profit in the East region during 2023?"),
         ("SQL: 4-Region Comparison", "Compare total sales and profit across all 4 regions."),

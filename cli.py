@@ -23,6 +23,13 @@ from agent.profiler import DatasetProfiler
 from agent.schema import AgentTrace, ToolType
 from evaluation.evaluator import AgentEvaluator
 
+# Ensure UTF-8 output encoding for cross-platform Unicode and emoji compatibility (e.g. Windows cp1252)
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 console = Console()
 
 
@@ -79,14 +86,18 @@ def display_examples():
 def display_profile(profiler: DatasetProfiler):
     """Renders formatted dataset quality profile."""
     prof = profiler.profile()
+    info = prof.get("dataset_info", {})
+    row_count = info.get("row_count", 0)
+    col_count = info.get("column_count", len(prof.get("columns", {})))
+    memory_mb = info.get("memory_usage_mb", 0.0)
     
     # Overview table
     overview = Table(title="Dataset Summary", border_style="green")
     overview.add_column("Metric", style="bold cyan")
     overview.add_column("Value", style="bold white")
-    overview.add_row("Total Transactions", f"{prof.total_rows:,}")
-    overview.add_row("Total Columns", str(len(prof.columns)))
-    overview.add_row("In-Memory Footprint", f"{prof.memory_usage_mb:.2f} MB")
+    overview.add_row("Total Transactions", f"{row_count:,}")
+    overview.add_row("Total Columns", str(col_count))
+    overview.add_row("In-Memory Footprint", f"{memory_mb:.2f} MB")
     overview.add_row("Table Name in DuckDB", config.table_name)
     console.print(overview)
     console.print()
@@ -94,19 +105,37 @@ def display_profile(profiler: DatasetProfiler):
     # Columns & Nulls Table
     schema_table = Table(title="Schema & Missing Values Audit", border_style="blue")
     schema_table.add_column("Column", style="bold yellow")
-    schema_table.add_column("Data Type", style="cyan")
+    schema_table.add_column("Semantic Type", style="cyan")
+    schema_table.add_column("Data Type", style="dim cyan")
     schema_table.add_column("Unique Count", style="white", justify="right")
     schema_table.add_column("Null Count", style="white", justify="right")
     schema_table.add_column("Quality Status", style="green")
 
-    for col, dtype in prof.columns.items():
-        nulls = prof.null_counts.get(col, 0)
-        uniques = prof.unique_counts.get(col, 0)
-        status = "[red]⚠️ Nulls Found[/red]" if nulls > 0 else "[green]✅ Clean[/green]"
-        schema_table.add_row(col, dtype, f"{uniques:,}", str(nulls), status)
+    for col, cinfo in prof.get("columns", {}).items():
+        dtype = cinfo.get("dtype", "unknown")
+        stype = cinfo.get("semantic_type", "unknown")
+        nulls = cinfo.get("null_count", 0)
+        null_pct = cinfo.get("null_pct", 0.0)
+        uniques = cinfo.get("unique_count", 0)
+        status = f"[red]⚠️ {nulls} nulls ({null_pct}%)[/red]" if nulls > 0 else "[green]✅ Clean[/green]"
+        schema_table.add_row(col, stype, dtype, f"{uniques:,}", str(nulls), status)
 
     console.print(schema_table)
     console.print()
+
+    # Temporal Reference Anchors Table (if present)
+    temporal = prof.get("temporal_anchors")
+    if temporal:
+        t_table = Table(title="Temporal Reference Anchors", border_style="magenta")
+        t_table.add_column("Anchor Dimension", style="bold cyan")
+        t_table.add_column("Resolved Value", style="bold white")
+        t_table.add_row("Primary Date Column", temporal.get("date_column", "N/A"))
+        t_table.add_row("Current / Most Recent Year", str(temporal.get("current_year", "N/A")))
+        t_table.add_row("Previous Year", str(temporal.get("previous_year", "N/A")))
+        t_table.add_row("Most Recent Quarter", str(temporal.get("most_recent_quarter", "N/A")))
+        t_table.add_row("Dataset Date Range", f"{temporal.get('min_date')} to {temporal.get('max_date')}")
+        console.print(t_table)
+        console.print()
 
 
 def display_trace(trace: AgentTrace):
@@ -129,14 +158,14 @@ def display_trace(trace: AgentTrace):
     )
     console.print(Panel(reasoning_content, title="🔍 Inspectable Execution Trace", border_style=color))
 
-    # 2. If SQL query tool was used, format raw SQL and table
+    # 2. If SQL query tool was used, format raw SQL and table using canonical 'query' parameter
     if tool_val == "query_data":
-        sql_query = trace.router_decision.parameters.get("sql_query", "")
+        sql_query = trace.router_decision.parameters.get("query", "")
         if sql_query:
             console.print("\n[bold cyan]⚡ Executed DuckDB SQL:[/bold cyan]")
             console.print(Syntax(sql_query, "sql", theme="monokai", line_numbers=False))
 
-        rows = trace.tool_result.data.get("rows", []) if trace.tool_result.data else []
+        rows = trace.tool_result.data.get("rows", []) if (trace.tool_result.data and isinstance(trace.tool_result.data, dict)) else []
         if rows and len(rows) > 0:
             console.print(f"\n[bold cyan]📋 Raw Data Output ({len(rows)} rows):[/bold cyan]")
             cols = list(rows[0].keys())
@@ -150,7 +179,7 @@ def display_trace(trace: AgentTrace):
             console.print(res_table)
 
     elif tool_val == "plot_chart":
-        spec = trace.tool_result.data.get("chart_spec", {}) if trace.tool_result.data else {}
+        spec = trace.tool_result.data.get("chart_spec", {}) if (trace.tool_result.data and isinstance(trace.tool_result.data, dict)) else {}
         console.print(f"\n[bold magenta]📈 Rendered Plotly {spec.get('chart_type', 'chart').upper()}[/bold magenta]: [white]'{spec.get('title', '')}'[/white]")
         console.print("[dim](Interactive chart is viewable in the Streamlit Web App: `streamlit run app/streamlit_app.py`)[/dim]")
 

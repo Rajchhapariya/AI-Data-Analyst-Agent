@@ -51,7 +51,7 @@ class SummaryStatsTool:
                 group_col = params.group_by
                 grouped_summary = {}
                 for col in valid_cols:
-                    if pd.api.types.is_numeric_dtype(df[col]):
+                    if pd.api.types.is_numeric_dtype(df[col]) and not pd.api.types.is_bool_dtype(df[col]):
                         grp = df.groupby(group_col)[col].agg([
                             ("count", "count"),
                             ("mean", lambda x: round(x.mean(), 2)),
@@ -73,7 +73,7 @@ class SummaryStatsTool:
                     n_total = len(series)
                     n_null = int(series.isna().sum())
                     
-                    if pd.api.types.is_numeric_dtype(series):
+                    if pd.api.types.is_numeric_dtype(series) and not pd.api.types.is_bool_dtype(series):
                         clean = series.dropna()
                         q25 = float(np.percentile(clean, 25)) if not clean.empty else 0.0
                         q75 = float(np.percentile(clean, 75)) if not clean.empty else 0.0

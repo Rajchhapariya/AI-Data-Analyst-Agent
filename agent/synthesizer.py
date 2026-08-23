@@ -145,21 +145,21 @@ class ResponseSynthesizer:
     ) -> Tuple[bool, str]:
         """
         Extracts numbers from narrative and checks if they appear in or are derived from the raw data.
+        Supports currency formatting ($), percentages (%), negative values, and scaled metrics (K/M).
+        
         Returns: (passed: bool, explanation: str)
         """
-        # Extract candidate numbers from narrative: ignores dates like 2023-01-01 or simple 1-2 digit list numbers
-        # Matches numbers like 1,234.56, 45.2%, $9,167,421.88, 7500, 132.51
-        number_pattern = r"[-+]?\$?\b\d{1,3}(?:,\d{3})*(?:\.\d+)?%?\b"
+        # Extract candidate numbers from narrative: matches numbers like 1,234.56, 45.2%, $9,167,421.88, 7500, 3059.41, -132.51
+        number_pattern = r"[-+]?\$?\b(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?%?\b"
         tokens = re.findall(number_pattern, narrative)
         
         # Clean extracted numbers into standard float values
         narrative_numbers = []
         for t in tokens:
             cleaned = t.replace("$", "").replace("%", "").replace(",", "").strip()
-            # Ignore year-like numbers between 2000-2030 or small integers <= 5 often used in bullets
             try:
                 val = float(cleaned)
-                narrative_numbers.append(val)
+                narrative_numbers.append((t, val))
             except ValueError:
                 continue
 
@@ -169,25 +169,38 @@ class ResponseSynthesizer:
         # Collect raw tool numbers
         raw_numbers = self._extract_numbers_from_tool_result(tool_result)
 
-        # Allow small floating point variations (rounding differences)
-        unmatched_numbers = []
-        for n in narrative_numbers:
-            # Check if n matches any raw number within relative tolerance
+        # Context allowlist: ordinal ranks, small bullet counts, and calendar years
+        context_allowlist = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 50, 100, 2020, 2021, 2022, 2023, 2024, 2025, 2026}
+
+        unmatched = []
+        for token_str, n in narrative_numbers:
+            if n in context_allowlist:
+                continue
+
             matched = False
-            # Also allow common small counts or ranks (1, 2, 3, 4, 5, 10, 100) or year numbers
-            if n in [1, 2, 3, 4, 5, 10, 15, 20, 100, 2021, 2022, 2023, 2024, 2025]:
-                matched = True
-            else:
-                for r in raw_numbers:
-                    if abs(n - r) < 0.05 or (r != 0 and abs(n - r) / abs(r) < 0.02):
+            for r in raw_numbers:
+                # 1. Direct match with relative or absolute tolerance
+                if abs(n - r) < 0.05 or (r != 0 and abs(n - r) / abs(r) < 0.02):
+                    matched = True
+                    break
+                # 2. Percentage representation (e.g. raw 0.155 -> narrative 15.5%)
+                if abs(n - (r * 100.0)) < 0.1 or (r != 0 and abs(n - (r * 100.0)) / abs(r * 100.0) < 0.02):
+                    matched = True
+                    break
+                # 3. Scaled representations (e.g. raw 2,179,369.32 -> narrative 2.18M)
+                if r > 1000:
+                    if abs(n - (r / 1e6)) < 0.05 or abs(n - round(r / 1e6, 2)) < 0.01:
                         matched = True
                         break
-            if not matched:
-                unmatched_numbers.append(n)
+                    if abs(n - (r / 1e3)) < 0.05 or abs(n - round(r / 1e3, 2)) < 0.01:
+                        matched = True
+                        break
 
-        if unmatched_numbers and len(unmatched_numbers) > len(narrative_numbers) * 0.4:
-            # If over 40% of numbers are unmatched, flag warning
-            notes = f"Warning: Found {len(unmatched_numbers)} numbers in narrative not strictly matching raw data: {unmatched_numbers[:4]}"
+            if not matched:
+                unmatched.append(f"'{token_str}' ({n})")
+
+        if unmatched:
+            notes = f"Warning: Found ungrounded numerical claims in narrative: {', '.join(unmatched[:4])}"
             return False, notes
 
         return True, "Numerical faithfulness validated: all narrative figures match tool output."

@@ -21,6 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
+import importlib
+import agent.pipeline
+import agent.profiler
+import agent.tools.query_tool
+import agent.tools.chart_tool
+import agent.tools.stats_tool
+
+importlib.reload(agent.pipeline)
+importlib.reload(agent.profiler)
+importlib.reload(agent.tools.query_tool)
+importlib.reload(agent.tools.chart_tool)
+importlib.reload(agent.tools.stats_tool)
+
 from agent.config import config
 from agent.pipeline import DataAnalystAgent
 from agent.profiler import DatasetProfiler
@@ -676,14 +689,14 @@ with tab_profiler:
     k1, k2, k3, k4 = st.columns(4)
     tot_rows = profile_data["dataset_info"]["row_count"]
     k1.metric("Total Records", f"{tot_rows:,}")
-    if "sales" in df_raw.columns:
+    if "sales" in df_raw.columns and pd.api.types.is_numeric_dtype(df_raw["sales"]) and not pd.api.types.is_bool_dtype(df_raw["sales"]):
         k2.metric("Total Sales", f"${df_raw['sales'].sum():,.0f}")
     else:
         k2.metric("Columns", f"{len(df_raw.columns):,}")
         
-    if "profit" in df_raw.columns:
+    if "profit" in df_raw.columns and pd.api.types.is_numeric_dtype(df_raw["profit"]) and not pd.api.types.is_bool_dtype(df_raw["profit"]):
         k3.metric("Total Profit", f"${df_raw['profit'].sum():,.0f}")
-    elif "salary" in df_raw.columns:
+    elif "salary" in df_raw.columns and pd.api.types.is_numeric_dtype(df_raw["salary"]) and not pd.api.types.is_bool_dtype(df_raw["salary"]):
         k3.metric("Total Salary", f"${df_raw['salary'].sum():,.0f}")
     else:
         num_nulls = int(df_raw.isna().sum().sum())
@@ -744,7 +757,7 @@ with tab_profiler:
             color_discrete_sequence=["#38bdf8"]
         )
         st.plotly_chart(fig_ts, width="stretch")
-    elif pd.api.types.is_numeric_dtype(df_raw[selected_col]):
+    elif pd.api.types.is_numeric_dtype(df_raw[selected_col]) and not pd.api.types.is_bool_dtype(df_raw[selected_col]):
         fig_dist = px.histogram(
             df_raw,
             x=selected_col,

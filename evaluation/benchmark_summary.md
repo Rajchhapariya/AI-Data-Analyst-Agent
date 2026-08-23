@@ -3,9 +3,9 @@
 **Total Test Cases**: 20
 - **Tool Selection Accuracy**: **100.0%**
 - **Tool Execution Success Rate**: **100.0%**
-- **Answer Correctness Rate**: **100.0%**
-- **Numerical Faithfulness Guard**: **100.0%**
-- **Average Query Latency**: **3535.99 ms**
+- **Answer Correctness Rate**: **85.0%**
+- **Numerical Faithfulness Guard**: **80.0%**
+- **Average Query Latency**: **4141.88 ms**
 
 ## Tool Classification Metrics (Precision / Recall / F1)
 | Tool | Precision | Recall | F1-Score | Support |
@@ -23,11 +23,11 @@
 | TC-03 | `lookup` | What was the total profit in the East region ... | `query_data` | `query_data` | ✅ | ✅ |
 | TC-04 | `aggregation` | Which product category generated the highest ... | `query_data` | `query_data` | ✅ | ✅ |
 | TC-05 | `aggregation` | What are the top 5 sub-categories by total sa... | `query_data` | `query_data` | ✅ | ✅ |
-| TC-06 | `aggregation` | Which customer segment has the highest averag... | `query_data` | `query_data` | ✅ | ✅ |
+| TC-06 | `aggregation` | Which customer segment has the highest averag... | `query_data` | `query_data` | ✅ | ❌ |
 | TC-07 | `comparison` | Compare total sales and total profit across a... | `query_data` | `query_data` | ✅ | ✅ |
-| TC-08 | `comparison` | How do sales and profit compare between First... | `query_data` | `query_data` | ✅ | ✅ |
+| TC-08 | `comparison` | How do sales and profit compare between First... | `query_data` | `query_data` | ✅ | ❌ |
 | TC-09 | `comparison` | What was the average shipping cost for Critic... | `query_data` | `query_data` | ✅ | ✅ |
-| TC-10 | `aggregation` | What is the average profit margin (profit div... | `query_data` | `query_data` | ✅ | ✅ |
+| TC-10 | `aggregation` | What is the average profit margin (profit div... | `query_data` | `query_data` | ✅ | ❌ |
 | TC-11 | `chart` | Can you plot a bar chart of total sales by pr... | `plot_chart` | `plot_chart` | ✅ | ✅ |
 | TC-12 | `chart` | Visualize the yearly sales trend from 2021 to... | `plot_chart` | `plot_chart` | ✅ | ✅ |
 | TC-13 | `chart` | Create a scatter plot comparing sales versus ... | `plot_chart` | `plot_chart` | ✅ | ✅ |

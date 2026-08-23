@@ -93,8 +93,8 @@
   - Point to the 4 Top KPI Cards:
     - **Tool Selection Accuracy**: `100.0%`
     - **Execution Success Rate**: `100.0%`
-    - **Answer Correctness**: `100.0%`
-    - **Avg Latency**: `3,536 ms`
+    - **Answer Correctness (Value-Level)**: `85.0%`
+    - **Avg Latency**: `4,142 ms`
   - Scroll down slightly to show the **Classification Performance by Tool** (1.00 F1 across all 4 tools) and the **Detailed Test Case Results** table.
 - **What to say**:
   > *"To validate reliability systematically, I built an automated 20-question ground-truth evaluation harness. The system achieves 100% tool selection accuracy, 1.00 F1-score across all 4 tools, and sub-4-second end-to-end latency. We have also documented failure edge cases and multi-hop boundaries in our empirical error analysis."*

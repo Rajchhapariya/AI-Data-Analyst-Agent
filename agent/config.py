@@ -33,9 +33,15 @@ class AgentConfig:
     # Safety & Tool Guardrails
     max_query_rows: int = 500
     disallowed_sql_keywords: tuple = (
+        # DDL & Data Mutation
         "DROP", "DELETE", "INSERT", "UPDATE", "ALTER", "CREATE",
         "REPLACE", "TRUNCATE", "GRANT", "COPY", "ATTACH", "DETACH",
-        "PRAGMA", "INSTALL", "LOAD", "EXPORT", "CALL", "EXEC", "EXECUTE"
+        "PRAGMA", "INSTALL", "LOAD", "EXPORT", "CALL", "EXEC", "EXECUTE",
+        # DuckDB File System & External Scan Functions
+        "READ_CSV", "READ_CSV_AUTO", "READ_PARQUET", "SCAN_PARQUET",
+        "READ_JSON", "READ_JSON_AUTO", "SCAN_CSV", "READ_TEXT", "READ_BLOB",
+        "GLOB", "GETENV", "CURRENT_SETTING", "SQLITE_SCAN", "POSTGRES_SCAN",
+        "ARROW_SCAN", "SYSTEM"
     )
     
     # Observability

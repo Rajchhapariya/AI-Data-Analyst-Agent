@@ -9,11 +9,99 @@ import json
 import time
 from typing import Dict, Any, List, Optional
 import pandas as pd
+import numpy as np
 import duckdb
 
 from agent.pipeline import DataAnalystAgent
 from agent.schema import ToolType, AgentTrace
 from agent.config import config
+
+
+def compare_query_results(
+    actual_df: Optional[pd.DataFrame],
+    expected_df: Optional[pd.DataFrame],
+    rtol: float = 1e-2,
+    atol: float = 1e-2,
+    check_order: bool = False
+) -> Tuple[bool, str]:
+    """Compares two analytical query result DataFrames for value-level numerical correctness.
+    
+    Args:
+        actual_df: DataFrame returned by the agent's executed SQL query.
+        expected_df: DataFrame returned by the ground-truth reference SQL query.
+        rtol: Relative tolerance for floating-point numerical comparisons.
+        atol: Absolute tolerance for floating-point / monetary comparisons ($0.01 default).
+        check_order: If True, requires exact row ordering; otherwise sorts before comparison.
+        
+    Returns:
+        Tuple of (is_correct: bool, explanation: str).
+    """
+    if actual_df is None or expected_df is None:
+        return False, "One of the result DataFrames is None."
+
+    if len(actual_df) != len(expected_df):
+        return False, f"Row count mismatch: expected {len(expected_df)} rows, got {len(actual_df)} rows."
+
+    if len(actual_df) == 0 and len(expected_df) == 0:
+        return True, "Both queries returned 0 rows (matching empty result)."
+
+    if len(actual_df.columns) != len(expected_df.columns):
+        return False, f"Column count mismatch: expected {len(expected_df.columns)} columns, got {len(actual_df.columns)}."
+
+    act = actual_df.copy()
+    exp = expected_df.copy()
+
+    # Normalize column names by position to handle alias variations (e.g. sum_sales vs total_sales)
+    act.columns = [f"col_{i}" for i in range(len(act.columns))]
+    exp.columns = [f"col_{i}" for i in range(len(exp.columns))]
+
+    # Handle row ordering: if order is not strictly mandated, sort both DataFrames consistently
+    if not check_order and len(act) > 1:
+        sort_cols = list(act.columns)
+        try:
+            act = act.sort_values(by=sort_cols).reset_index(drop=True)
+            exp = exp.sort_values(by=sort_cols).reset_index(drop=True)
+        except Exception:
+            act = act.reset_index(drop=True)
+            exp = exp.reset_index(drop=True)
+    else:
+        act = act.reset_index(drop=True)
+        exp = exp.reset_index(drop=True)
+
+    # Cell-by-cell numerical and categorical comparison
+    for col in act.columns:
+        s_act = act[col]
+        s_exp = exp[col]
+
+        for i in range(len(act)):
+            v_act = s_act.iloc[i]
+            v_exp = s_exp.iloc[i]
+
+            # Null handling
+            if pd.isna(v_act) and pd.isna(v_exp):
+                continue
+            if pd.isna(v_act) != pd.isna(v_exp):
+                return False, f"Null mismatch at row {i}, column '{col}': actual={v_act}, expected={v_exp}."
+
+            # Numeric comparison with relative, absolute, and ratio-to-percentage scale tolerance
+            if isinstance(v_act, (int, float, np.number)) and isinstance(v_exp, (int, float, np.number)):
+                f_act = float(v_act)
+                f_exp = float(v_exp)
+
+                direct_match = np.isclose(f_act, f_exp, rtol=rtol, atol=atol)
+                # Ratio vs Percentage tolerance (e.g. 0.15 vs 15.0 or 0.14 vs 14.0)
+                pct_match_1 = np.isclose(f_act * 100.0, f_exp, rtol=rtol, atol=atol * 100.0)
+                pct_match_2 = np.isclose(f_act, f_exp * 100.0, rtol=rtol, atol=atol * 100.0)
+
+                if not (direct_match or pct_match_1 or pct_match_2):
+                    return False, f"Value mismatch at row {i}, column '{col}': actual={v_act}, expected={v_exp} (tolerance atol={atol}, rtol={rtol})."
+            else:
+                str_act = str(v_act).strip().lower()
+                str_exp = str(v_exp).strip().lower()
+                if str_act != str_exp:
+                    return False, f"Value mismatch at row {i}, column '{col}': actual='{v_act}', expected='{v_exp}'."
+
+    return True, f"All {len(act)} rows and {len(act.columns)} columns matched ground truth within numerical tolerance."
 
 
 class AgentEvaluator:
@@ -115,18 +203,23 @@ class AgentEvaluator:
 
             if tool_match and exec_success and trace:
                 if expected_tool == "query_data" and gt_sql:
-                    # Validate SQL result against ground truth DuckDB query
+                    # Validate SQL result against ground truth DuckDB query via value-level cell comparison
                     try:
                         gt_df = self.db_con.execute(gt_sql).fetchdf()
                         actual_rows = trace.tool_result.data.get("rows", [])
+                        actual_df = pd.DataFrame(actual_rows) if actual_rows else pd.DataFrame()
                         
-                        # Compare shape and values
-                        if len(actual_rows) == len(gt_df):
-                            answer_correct = True
-                            validation_details = f"SQL result shape ({len(actual_rows)} rows) matched ground truth."
-                        else:
-                            answer_correct = False
-                            validation_details = f"Row count mismatch: expected {len(gt_df)}, got {len(actual_rows)}."
+                        # Determine if query requires semantic ranking/ordering (e.g. top, highest, lowest, limit)
+                        q_lower = question.lower()
+                        is_ranking_query = any(k in q_lower for k in ["top", "highest", "lowest", "rank", "bottom", "first"]) or ("LIMIT" in gt_sql.upper())
+                        
+                        is_correct, details = compare_query_results(
+                            actual_df=actual_df,
+                            expected_df=gt_df,
+                            check_order=is_ranking_query
+                        )
+                        answer_correct = is_correct
+                        validation_details = details
                     except Exception as sql_err:
                         answer_correct = False
                         validation_details = f"Ground truth validation error: {sql_err}"

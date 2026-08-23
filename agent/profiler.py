@@ -51,7 +51,7 @@ class DatasetProfiler:
             unique_count = int(series.nunique(dropna=True))
 
             # Detect semantic type
-            is_numeric = pd.api.types.is_numeric_dtype(series)
+            is_numeric = pd.api.types.is_numeric_dtype(series) and not pd.api.types.is_bool_dtype(series)
             is_datetime = False
             datetime_range = None
 
@@ -89,14 +89,26 @@ class DatasetProfiler:
 
             if is_numeric:
                 clean_num = series.dropna()
+                if not clean_num.empty:
+                    min_v = float(np.round(clean_num.min(), 2))
+                    max_v = float(np.round(clean_num.max(), 2))
+                    mean_v = float(np.round(clean_num.mean(), 2))
+                    std_val = clean_num.std()
+                    std_v = float(np.round(std_val, 2)) if len(clean_num) > 1 and not pd.isna(std_val) else 0.0
+                    med_v = float(np.round(clean_num.median(), 2))
+                    q25_v = float(np.round(clean_num.quantile(0.25), 2))
+                    q75_v = float(np.round(clean_num.quantile(0.75), 2))
+                else:
+                    min_v = max_v = mean_v = std_v = med_v = q25_v = q75_v = 0.0
+
                 col_info["stats"] = {
-                    "min": float(np.round(clean_num.min(), 2)) if not clean_num.empty else 0.0,
-                    "max": float(np.round(clean_num.max(), 2)) if not clean_num.empty else 0.0,
-                    "mean": float(np.round(clean_num.mean(), 2)) if not clean_num.empty else 0.0,
-                    "std": float(np.round(clean_num.std(), 2)) if not clean_num.empty else 0.0,
-                    "median": float(np.round(clean_num.median(), 2)) if not clean_num.empty else 0.0,
-                    "q25": float(np.round(clean_num.quantile(0.25), 2)) if not clean_num.empty else 0.0,
-                    "q75": float(np.round(clean_num.quantile(0.75), 2)) if not clean_num.empty else 0.0,
+                    "min": min_v,
+                    "max": max_v,
+                    "mean": mean_v,
+                    "std": std_v,
+                    "median": med_v,
+                    "q25": q25_v,
+                    "q75": q75_v,
                 }
                 # Check for unexpected negatives
                 if col in ["sales", "quantity", "shipping_cost", "discount"] and (clean_num < 0).any():

@@ -81,7 +81,7 @@
 - **What to say**:
   > *"Finally, to prove system reliability beyond anecdotal tests, I built an automated 20-question Ground Truth benchmark harness and a standalone 17-question adversarial robustness suite.
   > 
-  > The system achieves **100% tool selection accuracy (20/20)**, **1.00 F1-score across all 4 tools**, **100% answer correctness rate**, and **100% numerical faithfulness rate**, with an average end-to-end latency of **3,536 ms** per query.
+  > The system achieves **100% tool selection accuracy (20/20)**, **1.00 F1-score across all 4 tools**, **85% value-level answer correctness (17/20)** under a cell-by-cell numerical matrix comparator, and **80% strict numerical faithfulness**, with an average end-to-end latency of **4,142 ms** per query.
   > 
   > We've also documented full empirical post-mortems for edge cases—including dimensional ambiguity, temporal anchoring drift, multi-turn stateless boundaries, and compound reasoning limits—in `evaluation/error_analysis.md`.
   > 

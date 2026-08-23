@@ -1,6 +1,6 @@
 # AI Data Analyst Agent — Scripted Demo Walkthrough (2–3 Minutes)
 
-> **Audience**: Graduate Admissions Committee / Data Science & AI Interviewers / Technical Assessors  
+> **Audience**: Technical Interviewers, AI Systems Architects, and Engineering Assessors  
 > **Target Duration**: ~2.5 to 3.0 Minutes  
 > **Key Message**: *"This project demonstrates deliberate AI systems engineering: constrained safe tools, inspectable reasoning traces, DuckDB SQL execution, interactive visualizations, and deterministic anti-hallucination verification."*
 

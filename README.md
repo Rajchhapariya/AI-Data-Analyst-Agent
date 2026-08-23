@@ -6,7 +6,7 @@
 [![Evaluation Accuracy](https://img.shields.io/badge/Benchmark%20Accuracy-95.0%25-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-An end-to-end, production-grade **AI Data Analyst Agent** built as a portfolio project for graduate admissions in **Data Science, AI Systems, and Computer Science** (e.g., EDISS, CoDaS, DEAI). 
+An end-to-end, production-grade **AI Data Analyst Agent** designed for reliable, auditable natural-language analytics over relational and tabular datasets. 
 
 Instead of relying on unconstrained, black-box "LLM writes arbitrary Python `exec()` code" wrappers, this system reflects **deliberate systems engineering**: an inspectable Pydantic-schema Router/Planner dispatches requests across four tightly constrained, deterministic execution tools, backed by an in-memory **DuckDB SQL engine**, declarative **Plotly visualization builder**, descriptive statistical profiler, and a post-synthesis **Numerical Faithfulness Guard** to eliminate hallucinations.
 
@@ -290,7 +290,7 @@ python -m agent.profiler
 ---
 
 ## 🎬 Demo Recording Guide
-For presenting this project to admissions committees, professors, or technical reviewers, refer to the step-by-step 1–2 minute recording script in [`demo_recording_checklist.md`](demo_recording_checklist.md).
+For presenting a concise walkthrough of this project, refer to the step-by-step 1–2 minute demonstration script in [`demo_recording_checklist.md`](demo_recording_checklist.md).
 
 ---
 

@@ -1,6 +1,6 @@
 """
 AI Data Analyst Agent — Streamlit Web Application
-An inspectable, reasoning-first data analytics interface built for graduate-level demonstration.
+An inspectable, reasoning-first data analytics interface with constrained tool routing and deterministic execution.
 Displays the linear execution sequence: Question -> Router Reasoning -> Deterministic Tool -> Faithful Synthesis.
 """
 

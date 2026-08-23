@@ -1,5 +1,5 @@
 # AI Data Analyst Agent — 1–2 Minute Demo Recording Checklist & Script
-> **Target Audience**: Graduate Admissions Committees (Erasmus Mundus AI / Data Science / ML, Master's Evaluators).  
+> **Context**: Technical Walkthrough & Live System Demonstration.  
 > **Core Theme**: High-assurance AI systems engineering, constrained tool routing, deterministic DuckDB SQL execution, anti-hallucination verification, and quantitative evaluation.
 
 ---

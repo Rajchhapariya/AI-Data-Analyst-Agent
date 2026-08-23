@@ -2,7 +2,6 @@
 
 ## Project Summary
 - **Domain**: AI Data Analyst Agent with Constrained Tool Routing & Deterministic Execution
-- **Target Audience**: Graduate Admissions Portfolio (Data Science, EDISS, CoDaS, DEAI)
 - **Dataset**: Global Retail & Superstore Sales (`data/superstore_sales.csv` — 7,500 records spanning 2021-01-02 to 2024-12-30)
 - **Architecture**: 4-Tool Constrained Architecture (`query_data`, `plot_chart`, `summary_stats`, `clarify`) with inspectable reasoning, DuckDB read-only SQL, declarative Plotly visual analytics, and post-synthesis numerical faithfulness verification.
 - **LLM Engine**: Provider-agnostic abstraction (`agent/llm.py` via `litellm`) running `gpt-4o-mini` with exponential backoff & jitter.
@@ -69,9 +68,9 @@
 - **Pure-Python Markdown Formatter**: Replaced `df.to_markdown()` with a robust in-house `_df_to_markdown_table()` in `app/streamlit_app.py` ensuring zero `ImportError` runtime crashes even when third-party `tabulate` is absent. Added `tabulate>=0.9.0` to `requirements.txt`.
 - **UI Error Guard**: Added visual sidebar warning banners when API keys are unconfigured and wrapped pipeline calls in friendly UI error alerts.
 
-### 9. 1–2 Minute Admissions Demo Recording & Checklist
+### 9. 1–2 Minute Interactive Demo Recording & Checklist
 - **Recording Guide**: Created `demo_recording_checklist.md` with explicit timecoded segments (0:00–2:00), spoken engineering highlights, and 1-click fallback queries.
-- **Captured Portfolio Walkthrough**: Generated a full screen recording (`recordings/full_portfolio_demo_1787466678366.webp`) and documented all visual states in `walkthrough.md`.
+- **Captured Interactive Walkthrough**: Generated a full screen recording (`recordings/full_portfolio_demo_1787466678366.webp`) and documented all visual states in `walkthrough.md`.
 
 ---
 
@@ -105,5 +104,5 @@
   - `test_agent.py`: Core tool, security, faithfulness, and pipeline test suite (9 tests).
   - `test_cli.py`: CLI display, contract, parameter alignment, and encoding regression tests (4 tests).
   - `robustness_check.py`: 17-question adversarial paraphrasing and multi-turn boundary tests.
-- `README.md`: Comprehensive graduate-level portfolio documentation.
-- `demo_script.md`: 2–3 minute scripted demo walkthrough for interviews.
+- `README.md`: Comprehensive technical documentation and architecture overview.
+- `demo_script.md`: 2–3 minute scripted demo walkthrough for technical assessments.

@@ -1,0 +1,23 @@
+# AI Data Analyst Agent — Dependencies
+
+# Web Interface & Interactive Dashboard
+streamlit>=1.30.0
+plotly>=5.18.0
+
+# Data Processing & In-Memory Analytical Engine
+pandas>=2.0.0
+numpy>=1.24.0
+duckdb>=0.9.0
+
+# LLM Providers & Structured Output Parsing
+litellm>=1.20.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+
+# Terminal CLI & Rich Output
+rich>=13.0.0
+
+# Testing & Quality Assurance
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+anyio>=4.0.0

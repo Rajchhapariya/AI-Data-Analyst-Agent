@@ -1,0 +1,172 @@
+[
+  {
+    "id": "TC-01",
+    "category": "lookup",
+    "question": "What is the total sales amount across the entire dataset?",
+    "expected_tool": "query_data",
+    "expected_output_type": "scalar_metric",
+    "ground_truth_sql": "SELECT ROUND(SUM(sales), 2) AS total_sales FROM dataset",
+    "description": "Basic global aggregation lookup across all records."
+  },
+  {
+    "id": "TC-02",
+    "category": "lookup",
+    "question": "How many total orders and unique customers are in the dataset?",
+    "expected_tool": "query_data",
+    "expected_output_type": "scalar_metric",
+    "ground_truth_sql": "SELECT COUNT(DISTINCT order_id) AS total_orders, COUNT(DISTINCT customer_id) AS unique_customers FROM dataset",
+    "description": "Distinct count lookup across identifiers."
+  },
+  {
+    "id": "TC-03",
+    "category": "lookup",
+    "question": "What was the total profit in the East region during 2023?",
+    "expected_tool": "query_data",
+    "expected_output_type": "scalar_metric",
+    "ground_truth_sql": "SELECT ROUND(SUM(profit), 2) AS total_profit FROM dataset WHERE region = 'East' AND SUBSTR(order_date, 1, 4) = '2023'",
+    "description": "Filtered aggregation with string temporal slice."
+  },
+  {
+    "id": "TC-04",
+    "category": "aggregation",
+    "question": "Which product category generated the highest total profit?",
+    "expected_tool": "query_data",
+    "expected_output_type": "ranked_table",
+    "ground_truth_sql": "SELECT category, ROUND(SUM(profit), 2) AS total_profit FROM dataset GROUP BY category ORDER BY total_profit DESC LIMIT 1",
+    "description": "Category-level grouping with descending profit ranking."
+  },
+  {
+    "id": "TC-05",
+    "category": "aggregation",
+    "question": "What are the top 5 sub-categories by total sales volume?",
+    "expected_tool": "query_data",
+    "expected_output_type": "ranked_table",
+    "ground_truth_sql": "SELECT sub_category, ROUND(SUM(sales), 2) AS total_sales FROM dataset GROUP BY sub_category ORDER BY total_sales DESC LIMIT 5",
+    "description": "Multi-row ranked aggregation."
+  },
+  {
+    "id": "TC-06",
+    "category": "aggregation",
+    "question": "Which customer segment has the highest average discount?",
+    "expected_tool": "query_data",
+    "expected_output_type": "ranked_table",
+    "ground_truth_sql": "SELECT segment, ROUND(AVG(discount), 4) AS avg_discount FROM dataset GROUP BY segment ORDER BY avg_discount DESC LIMIT 1",
+    "description": "Average metric calculation grouped by customer segment."
+  },
+  {
+    "id": "TC-07",
+    "category": "comparison",
+    "question": "Compare total sales and total profit across all 4 regions.",
+    "expected_tool": "query_data",
+    "expected_output_type": "comparison_table",
+    "ground_truth_sql": "SELECT region, ROUND(SUM(sales), 2) AS total_sales, ROUND(SUM(profit), 2) AS total_profit FROM dataset GROUP BY region ORDER BY total_sales DESC",
+    "description": "Multi-metric regional comparison table."
+  },
+  {
+    "id": "TC-08",
+    "category": "comparison",
+    "question": "How do sales and profit compare between First Class and Standard Class shipping modes?",
+    "expected_tool": "query_data",
+    "expected_output_type": "comparison_table",
+    "ground_truth_sql": "SELECT ship_mode, ROUND(SUM(sales), 2) AS total_sales, ROUND(SUM(profit), 2) AS total_profit, COUNT(*) AS order_count FROM dataset WHERE ship_mode IN ('First Class', 'Standard Class') GROUP BY ship_mode",
+    "description": "Discrete categorical subset comparison."
+  },
+  {
+    "id": "TC-09",
+    "category": "comparison",
+    "question": "What was the average shipping cost for Critical priority orders compared to Low priority orders?",
+    "expected_tool": "query_data",
+    "expected_output_type": "comparison_table",
+    "ground_truth_sql": "SELECT order_priority, ROUND(AVG(shipping_cost), 2) AS avg_shipping_cost FROM dataset WHERE order_priority IN ('Critical', 'Low') GROUP BY order_priority",
+    "description": "Categorical priority filter with mean calculation."
+  },
+  {
+    "id": "TC-10",
+    "category": "aggregation",
+    "question": "What is the average profit margin (profit divided by sales) for each product category?",
+    "expected_tool": "query_data",
+    "expected_output_type": "ranked_table",
+    "ground_truth_sql": "SELECT category, ROUND(SUM(profit) / SUM(sales) * 100, 2) AS profit_margin_pct FROM dataset GROUP BY category ORDER BY profit_margin_pct DESC",
+    "description": "Derived ratio KPI calculation with grouping."
+  },
+  {
+    "id": "TC-11",
+    "category": "chart",
+    "question": "Can you plot a bar chart of total sales by product category?",
+    "expected_tool": "plot_chart",
+    "expected_output_type": "figure",
+    "description": "Explicit visual request for category bar chart."
+  },
+  {
+    "id": "TC-12",
+    "category": "chart",
+    "question": "Visualize the yearly sales trend from 2021 to 2024 as a line chart.",
+    "expected_tool": "plot_chart",
+    "expected_output_type": "figure",
+    "description": "Explicit time-series line chart visualization."
+  },
+  {
+    "id": "TC-13",
+    "category": "chart",
+    "question": "Create a scatter plot comparing sales versus profit.",
+    "expected_tool": "plot_chart",
+    "expected_output_type": "figure",
+    "description": "Two-variable numeric correlation scatter plot."
+  },
+  {
+    "id": "TC-14",
+    "category": "chart",
+    "question": "Show a box plot of shipping costs grouped by ship mode.",
+    "expected_tool": "plot_chart",
+    "expected_output_type": "figure",
+    "description": "Categorical distribution box plot."
+  },
+  {
+    "id": "TC-15",
+    "category": "chart",
+    "question": "Plot a histogram of order quantities to show their distribution.",
+    "expected_tool": "plot_chart",
+    "expected_output_type": "figure",
+    "description": "Single variable distribution histogram."
+  },
+  {
+    "id": "TC-16",
+    "category": "stats",
+    "question": "What are the summary statistics, mean, standard deviation, and quartiles for sales and profit?",
+    "expected_tool": "summary_stats",
+    "expected_output_type": "stats_dict",
+    "description": "Direct parametric descriptive statistics query."
+  },
+  {
+    "id": "TC-17",
+    "category": "stats",
+    "question": "Give me the descriptive statistics and distribution metrics for discount and shipping cost.",
+    "expected_tool": "summary_stats",
+    "expected_output_type": "stats_dict",
+    "description": "Descriptive statistics profiling for fee/discount columns."
+  },
+  {
+    "id": "TC-18",
+    "category": "ambiguity_out_of_scope",
+    "question": "Show me our best products.",
+    "expected_tool": "clarify",
+    "expected_output_type": "clarification",
+    "description": "Ambiguous request missing definition of 'best' (sales, profit, quantity, margin)."
+  },
+  {
+    "id": "TC-19",
+    "category": "ambiguity_out_of_scope",
+    "question": "What will the weather and temperature be in Seattle next week?",
+    "expected_tool": "clarify",
+    "expected_output_type": "clarification",
+    "description": "Out-of-scope domain query unrelated to retail sales dataset."
+  },
+  {
+    "id": "TC-20",
+    "category": "ambiguity_out_of_scope",
+    "question": "Analyze performance for the recent period.",
+    "expected_tool": "clarify",
+    "expected_output_type": "clarification",
+    "description": "Under-specified timeframe and undefined performance metric."
+  }
+]

@@ -1,0 +1,370 @@
+{
+  "dataset_info": {
+    "file_path": "data/superstore_sales.csv",
+    "row_count": 7500,
+    "column_count": 20,
+    "memory_usage_mb": 6.76,
+    "columns": [
+      "order_id",
+      "order_date",
+      "ship_date",
+      "ship_mode",
+      "customer_id",
+      "customer_name",
+      "segment",
+      "city",
+      "state",
+      "region",
+      "category",
+      "sub_category",
+      "product_id",
+      "product_name",
+      "sales",
+      "quantity",
+      "discount",
+      "profit",
+      "shipping_cost",
+      "order_priority"
+    ]
+  },
+  "columns": {
+    "order_id": {
+      "name": "order_id",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 7500,
+      "semantic_type": "text_identifier",
+      "sample_values": {
+        "CA-2024-100001": 1,
+        "CA-2022-100002": 1,
+        "CA-2023-100003": 1,
+        "CA-2024-100004": 1,
+        "CA-2024-100005": 1,
+        "CA-2021-100006": 1,
+        "CA-2021-100007": 1,
+        "CA-2022-100008": 1
+      }
+    },
+    "order_date": {
+      "name": "order_date",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 1451,
+      "semantic_type": "datetime",
+      "datetime_range": {
+        "min": "2021-01-01 00:00:00",
+        "max": "2024-12-31 00:00:00"
+      }
+    },
+    "ship_date": {
+      "name": "ship_date",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 1457,
+      "semantic_type": "datetime",
+      "datetime_range": {
+        "min": "2021-01-02 00:00:00",
+        "max": "2025-01-06 00:00:00"
+      }
+    },
+    "ship_mode": {
+      "name": "ship_mode",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 4,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Standard Class": 4514,
+        "Second Class": 1512,
+        "First Class": 1099,
+        "Same Day": 375
+      }
+    },
+    "customer_id": {
+      "name": "customer_id",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 40,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "ZU-24340": 215,
+        "ER-49152": 215,
+        "MI-86088": 208,
+        "AR-49027": 207,
+        "NO-85029": 202,
+        "WI-87962": 202,
+        "MA-29358": 201,
+        "SH-74449": 200
+      }
+    },
+    "customer_name": {
+      "name": "customer_name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 40,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Zuschuss Donatelli": 215,
+        "Eric Hoffmann": 215,
+        "Mitch Willingham": 208,
+        "Arthur Prichep": 207,
+        "Nora Pelletier": 202,
+        "William Brown": 202,
+        "Maria Etezadi": 201,
+        "Shirley Schmidt": 200
+      }
+    },
+    "segment": {
+      "name": "segment",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 3,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Consumer": 3889,
+        "Corporate": 2229,
+        "Home Office": 1382
+      }
+    },
+    "city": {
+      "name": "city",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 68,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Rochester": 215,
+        "Columbus": 214,
+        "Aurora": 208,
+        "Newark": 146,
+        "Phoenix": 145,
+        "Mesa": 145,
+        "Boston": 142,
+        "Saint Paul": 136
+      }
+    },
+    "state": {
+      "name": "state",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 20,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Washington": 433,
+        "Arizona": 415,
+        "Virginia": 407,
+        "California": 394,
+        "Massachusetts": 388,
+        "Minnesota": 386,
+        "Georgia": 385,
+        "North Carolina": 385
+      }
+    },
+    "region": {
+      "name": "region",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 4,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "West": 1955,
+        "South": 1913,
+        "Central": 1832,
+        "East": 1800
+      }
+    },
+    "category": {
+      "name": "category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 3,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Technology": 2583,
+        "Furniture": 2470,
+        "Office Supplies": 2447
+      }
+    },
+    "sub_category": {
+      "name": "sub_category",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 17,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Phones": 679,
+        "Copiers": 646,
+        "Tables": 643,
+        "Accessories": 641,
+        "Chairs": 629,
+        "Machines": 617,
+        "Furnishings": 610,
+        "Bookcases": 588
+      }
+    },
+    "product_id": {
+      "name": "product_id",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 62,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "TEC-PH-61287182": 190,
+        "TEC-MA-46472006": 179,
+        "FUR-TA-30581222": 176,
+        "TEC-PH-80455625": 170,
+        "FUR-CH-76540678": 169,
+        "TEC-AC-40059727": 167,
+        "FUR-FU-30947065": 165,
+        "TEC-CO-35106236": 165
+      }
+    },
+    "product_name": {
+      "name": "product_name",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 62,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Samsung Galaxy S22 Ultra": 190,
+        "Star Micronics Impact POS Receipt Printer": 179,
+        "Balt Training Tables with Wire Management": 176,
+        "Motorola Moto G Stylus": 170,
+        "Novimex Swivel Mesh Chair": 169,
+        "SanDisk 64GB Ultra USB 3.0 Flash Drive": 167,
+        "Howard Miller 13-3/4\" Diameter Wall Clock": 165,
+        "Hewlett Packard LaserJet Enterprise Copier": 165
+      }
+    },
+    "sales": {
+      "name": "sales",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 7285,
+      "semantic_type": "numeric",
+      "stats": {
+        "min": 1.2,
+        "max": 22313.22,
+        "mean": 1222.32,
+        "std": 1852.82,
+        "median": 462.42,
+        "q25": 133.34,
+        "q75": 1537.42
+      }
+    },
+    "quantity": {
+      "name": "quantity",
+      "dtype": "int64",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 11,
+      "semantic_type": "numeric",
+      "stats": {
+        "min": 1.0,
+        "max": 14.0,
+        "mean": 3.38,
+        "std": 2.17,
+        "median": 3.0,
+        "q25": 2.0,
+        "q75": 5.0
+      }
+    },
+    "discount": {
+      "name": "discount",
+      "dtype": "float64",
+      "null_count": 38,
+      "null_pct": 0.51,
+      "unique_count": 9,
+      "semantic_type": "numeric",
+      "stats": {
+        "min": 0.0,
+        "max": 0.8,
+        "mean": 0.12,
+        "std": 0.17,
+        "median": 0.1,
+        "q25": 0.0,
+        "q75": 0.2
+      }
+    },
+    "profit": {
+      "name": "profit",
+      "dtype": "float64",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 6863,
+      "semantic_type": "numeric",
+      "stats": {
+        "min": -11306.57,
+        "max": 8440.88,
+        "mean": 132.51,
+        "std": 647.34,
+        "median": 33.0,
+        "q25": -3.83,
+        "q75": 178.53
+      }
+    },
+    "shipping_cost": {
+      "name": "shipping_cost",
+      "dtype": "float64",
+      "null_count": 66,
+      "null_pct": 0.88,
+      "unique_count": 5767,
+      "semantic_type": "numeric",
+      "stats": {
+        "min": 2.5,
+        "max": 1688.85,
+        "mean": 104.7,
+        "std": 156.18,
+        "median": 43.66,
+        "q25": 16.51,
+        "q75": 127.59
+      }
+    },
+    "order_priority": {
+      "name": "order_priority",
+      "dtype": "object",
+      "null_count": 0,
+      "null_pct": 0.0,
+      "unique_count": 4,
+      "semantic_type": "categorical",
+      "sample_values": {
+        "Medium": 4164,
+        "High": 1485,
+        "Low": 1099,
+        "Critical": 752
+      }
+    }
+  },
+  "data_quality_audit": {
+    "total_issues_found": 2,
+    "issues": [
+      {
+        "column": "discount",
+        "issue_type": "missing_values",
+        "severity": "low",
+        "description": "Column 'discount' has 38 missing values (0.51%)."
+      },
+      {
+        "column": "shipping_cost",
+        "issue_type": "missing_values",
+        "severity": "low",
+        "description": "Column 'shipping_cost' has 66 missing values (0.88%)."
+      }
+    ]
+  }
+}

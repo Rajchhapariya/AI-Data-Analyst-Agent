@@ -103,7 +103,7 @@ Many commercial LLM data analyst demos follow an insecure and brittle design: th
 | **Security & Safety** | ❌ Vulnerable to RCE, file tampering, network calls | ✅ **Zero Execution Vulnerability**; strict DuckDB AST read-only guards | Eliminates sandbox breakouts by restricting execution to audited SQL / Plotly specs. |
 | **Determinism** | ❌ Highly volatile; fragile imports & syntax breaks | ✅ **100% Deterministic** tool dispatch and execution | Pre-compiled tools guarantee consistent outputs given identical parameters. |
 | **Inspectability** | ❌ Multi-line Python scripts opaque to non-technical users | ✅ **Granular Telemetry** (Router plan, selected tool, SQL/spec, latency) | Every step emits a structured `AgentTrace` readable by auditors or BI users. |
-| **Latency & Cost** | ❌ Iterative LLM fix loops when code errors (30s+ latency) | ✅ **Single-turn Tool Execution** (~4.2s end-to-end latency) | Direct parameter extraction eliminates multi-turn code debugging cycles. |
+| **Latency & Cost** | ❌ Iterative LLM fix loops when code errors (30s+ latency) | ✅ **Single-turn Tool Execution** (~3.5s end-to-end latency) | Direct parameter extraction eliminates multi-turn code debugging cycles. |
 | **Hallucination Control** | ❌ No built-in verification between code stdout and text | ✅ **Post-Synthesis Token Verification Guard** | Cross-checks cited narrative numbers against raw tool output matrices. |
 
 ---
@@ -151,9 +151,13 @@ Before receiving user queries, the agent computes an in-memory schema and data q
 ### 1. SQL Injection & Mutation Guard
 ```python
 # AST / Regex Safety Filter in agent/tools/query_tool.py
-DISALLOWED_KEYWORDS = ("DROP", "DELETE", "INSERT", "UPDATE", "ALTER", "CREATE", "REPLACE", "TRUNCATE", "PRAGMA", "ATTACH")
+DISALLOWED_KEYWORDS = (
+    "DROP", "DELETE", "INSERT", "UPDATE", "ALTER", "CREATE",
+    "REPLACE", "TRUNCATE", "GRANT", "COPY", "ATTACH", "DETACH",
+    "PRAGMA", "INSTALL", "LOAD", "EXPORT", "CALL", "EXEC", "EXECUTE"
+)
 if any(kw in sql_upper for kw in DISALLOWED_KEYWORDS) or ";" in clean_query:
-    raise PermissionError("Security violation: Only read-only SELECT and CTE queries are permitted.")
+    raise ValueError("Security violation: Only read-only SELECT and CTE queries are permitted.")
 ```
 
 ### 2. Numerical Faithfulness Guard (`agent/synthesizer.py`)
@@ -176,8 +180,8 @@ The system includes a 20-question Ground Truth benchmark dataset (`evaluation/be
 | **Tool Selection Accuracy** | **100.0%** (20 / 20) | 75.0% |
 | **Tool Execution Success Rate** | **100.0%** (20 / 20) | 80.0% |
 | **Answer Correctness Rate** | **100.0%** (20 / 20) | 70.0% |
-| **Numerical Faithfulness Rate** | **95.0%** (19 / 20) | 80.0% |
-| **Average End-to-End Latency** | **3,956 ms** | ~12,000 ms |
+| **Numerical Faithfulness Rate** | **100.0%** (20 / 20) | 80.0% |
+| **Average End-to-End Latency** | **3,536 ms** | ~12,000 ms |
 
 ### Tool Classification Precision, Recall, and F1-Score
 
@@ -290,5 +294,3 @@ python -m agent.profiler
 
 ## 📄 License
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-#   A I - D a t a - A n a l y s t - A g e n t  
- 

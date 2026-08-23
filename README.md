@@ -276,7 +276,7 @@ python -m agent.profiler
 - **Rich Interactive CLI**: `python cli.py`
 - **Run Core Benchmark Suite**: `python -m evaluation.evaluator`
 - **Run Robustness & Multi-Hop Suite**: `python tests/robustness_check.py`
-- **Run Unit Tests**: `pytest -v tests/test_agent.py`
+- **Run Full Unit & Regression Tests**: `pytest -v`
 
 ---
 

@@ -20,7 +20,7 @@
   - `plot_chart`: **1.00** (5 / 5)
   - `summary_stats`: **1.00** (2 / 2)
   - `clarify`: **1.00** (3 / 3)
-- **Pytest Unit Test Suite (`tests/test_agent.py`)**: **9 / 9 Passed** (100% test suite pass)
+- **Pytest Unit Test Suite (`pytest -v`)**: **14 / 14 Passed** (100% test suite pass across `test_agent.py` and `test_cli.py`)
 - **Average End-to-End Latency**: **3,536 ms** per analytical turn
 
 ---
@@ -54,13 +54,22 @@
 - **Edge-Case Hardening**: Added explicit guards rejecting empty dataframes, header-only files, zero-column uploads, and graceful handling of datasets without date columns.
 - **Executive Markdown Export**: Added 1-click `📥 Download Result (.md)` button in Streamlit chat to export complete query telemetry (`AgentTrace`), dimensional audits, raw SQL outputs, and verified executive narratives.
 
+### 6. Rich CLI Stabilization & Regression Suite (`cli.py`, `tests/test_cli.py`)
+- **Profile Dictionary Contract**: Fixed `display_profile()` to consume the nested dictionary contract returned by `DatasetProfiler.profile()` (`prof["dataset_info"]`, `prof["columns"]`, `prof["temporal_anchors"]`), resolving an `AttributeError`.
+- **Canonical Schema Parameter Alignment**: Updated `display_trace()` to extract the SQL query via the canonical `query` field from `QueryDataParams`, ensuring SQL syntax boxes render properly.
+- **Cross-Platform UTF-8 Console Safety**: Reconfigured `sys.stdout` to UTF-8 on Windows environments, eliminating `UnicodeEncodeError` crashes when rendering emojis (`🔍`, `⚡`, `📈`, `🛡️`).
+- **Added Regression Suite**: Added 4 dedicated tests in `tests/test_cli.py` bringing the unit test suite to 14/14 passing tests.
+
 ---
 
 ## 📁 Repository Structure & Artifacts
 
-- `.env`: API configuration (`OPENAI_API_KEY`, `LLM_MODEL=gpt-4o-mini`, `LLM_FALLBACK_MODEL=gpt-4o`).
+- `.env.example`: Template for required API keys (`OPENAI_API_KEY`, optional `GEMINI_API_KEY`).
+- `.gitignore`: Production git ignore protecting secrets, cache, and scratch directories.
+- `LICENSE`: Permissive MIT Open-Source License.
+- `requirements.txt`: Curated Python dependencies.
 - `agent/`:
-  - `config.py`: Configuration & security blacklist keywords.
+  - `config.py`: Configuration & 19 disallowed SQL keywords.
   - `schema.py`: Strict Pydantic models for tools, router decisions, and `AgentTrace`.
   - `llm.py`: Provider abstraction with exponential backoff retry.
   - `profiler.py`: Dataset profiler with dynamic Temporal Reference Anchors.
@@ -68,14 +77,17 @@
   - `synthesizer.py`: Grounded narrative generator + Numerical Faithfulness Guard.
   - `pipeline.py`: Main `DataAnalystAgent` orchestrator.
   - `tools/`: Constrained implementations (`query_tool.py`, `chart_tool.py`, `stats_tool.py`, `clarify_tool.py`).
-- `app/streamlit_app.py`: Reasoning-first Streamlit web interface.
-- `cli.py`: Interactive Rich terminal interface with spinners and trace panels.
+- `app/streamlit_app.py`: Reasoning-first Streamlit web interface with CSV uploader & Markdown export.
+- `cli.py`: Interactive Rich terminal interface with spinners, syntax-highlighted SQL, and trace panels.
 - `evaluation/`:
   - `benchmark_dataset.json`: 20 ground-truth test cases.
   - `evaluator.py`: Automated benchmarking harness.
   - `benchmark_results.json`: Detailed 20-case telemetry and latency data.
   - `benchmark_summary.md`: Markdown summary report.
   - `error_analysis.md`: In-depth post-mortems for Bug 1, Bug 2, TC-12 hallucination guard, and rate limits.
-- `tests/test_agent.py`: Pytest suite (9/9 passed).
+- `tests/`:
+  - `test_agent.py`: Core tool, security, faithfulness, and pipeline test suite (9 tests).
+  - `test_cli.py`: CLI display, contract, parameter alignment, and encoding regression tests (4 tests).
+  - `robustness_check.py`: 17-question adversarial paraphrasing and multi-turn boundary tests.
 - `README.md`: Comprehensive graduate-level portfolio documentation.
 - `demo_script.md`: 2–3 minute scripted demo walkthrough for interviews.

@@ -104,6 +104,12 @@ class AgentRouter:
     """Routes user queries to constrained tools with transparent reasoning."""
 
     def __init__(self, profiler: DatasetProfiler, llm_client: Optional[LLMClient] = None):
+        """Initializes the semantic router with schema context and LLM client.
+        
+        Args:
+            profiler: DatasetProfiler instance providing dynamic schema context and temporal anchors.
+            llm_client: Optional custom LLMClient instance.
+        """
         self.profiler = profiler
         self.llm = llm_client or default_llm_client
 

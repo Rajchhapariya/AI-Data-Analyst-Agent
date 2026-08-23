@@ -74,6 +74,7 @@ class ClarifyParams(BaseModel):
     suggested_clarification: Union[str, List[str]] = Field(..., description="Constructive alternative questions or options the user can choose from.")
 
     def model_post_init(self, __context: Any) -> None:
+        """Normalizes list inputs into human-readable strings if LLM emits array outputs."""
         if isinstance(self.reason, list):
             self.reason = "; ".join(self.reason)
         if isinstance(self.missing_information, list):

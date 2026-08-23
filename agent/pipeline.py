@@ -36,6 +36,12 @@ class DataAnalystAgent:
         dataset_path_or_df: Optional[Any] = None,
         llm_client: Optional[LLMClient] = None
     ):
+        """Initializes the agent coordinator, dataset profiler, router, and the 4 execution tools.
+        
+        Args:
+            dataset_path_or_df: CSV filepath string or active in-memory pandas DataFrame.
+            llm_client: Optional custom LLMClient instance for model calls.
+        """
         if dataset_path_or_df is not None:
             self.dataset_source = dataset_path_or_df
         else:

@@ -12,6 +12,14 @@ class ClarifyTool:
     """Handles ambiguous questions, undefined business metrics, and out-of-domain requests."""
 
     def execute(self, params: ClarifyParams) -> ToolExecutionResult:
+        """Constructs structured disambiguation metadata and guided user suggestions.
+        
+        Args:
+            params: Validated ClarifyParams specifying missing dimensions and suggested follow-ups.
+            
+        Returns:
+            ToolExecutionResult with formatted clarification message and missing parameter details.
+        """
         start_time = time.time()
         elapsed_ms = round((time.time() - start_time) * 1000, 2)
         

@@ -28,6 +28,11 @@ class ResponseSynthesizer:
     """Synthesizes narrative data answers and enforces numerical faithfulness against raw tool output."""
 
     def __init__(self, llm_client: Optional[LLMClient] = None):
+        """Initializes the response synthesizer with an LLM client.
+        
+        Args:
+            llm_client: Optional custom LLMClient instance for natural language synthesis.
+        """
         self.llm = llm_client or default_llm_client
 
     def synthesize(
@@ -201,7 +206,8 @@ class ResponseSynthesizer:
         if not data:
             return nums
 
-        def _traverse(obj: Any):
+        def _traverse(obj: Any) -> None:
+            """Recursively traverses nested dictionaries/lists to extract raw floats."""
             if isinstance(obj, (int, float)) and not isinstance(obj, bool):
                 nums.append(float(obj))
             elif isinstance(obj, dict):

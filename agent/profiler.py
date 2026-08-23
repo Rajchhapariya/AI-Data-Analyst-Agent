@@ -14,6 +14,11 @@ class DatasetProfiler:
     """Profiles a pandas DataFrame or CSV file for schema, quality, and statistical summaries."""
 
     def __init__(self, df_or_path: Any):
+        """Initializes the statistical dataset profiler.
+        
+        Args:
+            df_or_path: CSV filepath string or active in-memory pandas DataFrame.
+        """
         if isinstance(df_or_path, str):
             self.file_path = df_or_path
             self.df = pd.read_csv(df_or_path)

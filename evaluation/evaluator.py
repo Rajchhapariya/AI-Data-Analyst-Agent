@@ -24,6 +24,12 @@ class AgentEvaluator:
         benchmark_file: str = "evaluation/benchmark_dataset.json",
         dataset_path: Optional[str] = None
     ):
+        """Initializes the benchmark harness with ground-truth test cases and DuckDB verifier.
+        
+        Args:
+            benchmark_file: Path to JSON ground-truth benchmark suite.
+            dataset_path: Path to dataset CSV file.
+        """
         self.benchmark_file = benchmark_file
         self.dataset_path = dataset_path or config.dataset_path
         

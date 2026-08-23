@@ -19,6 +19,11 @@ class PlotChartTool:
     """Generates constrained, interactive Plotly visualizations based on declarative chart specs."""
 
     def __init__(self, df_or_path: Any):
+        """Initializes the chart tool with either a CSV filepath string or a pandas DataFrame.
+        
+        Args:
+            df_or_path: Filepath string or active in-memory DataFrame.
+        """
         if isinstance(df_or_path, str):
             self.df = pd.read_csv(df_or_path)
         elif isinstance(df_or_path, pd.DataFrame):
@@ -27,6 +32,14 @@ class PlotChartTool:
             raise ValueError("df_or_path must be a path string or pandas DataFrame")
 
     def execute(self, params: PlotChartParams) -> ToolExecutionResult:
+        """Renders a constrained Plotly chart (bar, line, scatter, box, histogram) from declarative parameters.
+        
+        Args:
+            params: Validated PlotChartParams specifying chart type, axes, aggregation, and filters.
+            
+        Returns:
+            ToolExecutionResult containing the Plotly JSON specification and aggregated data summary.
+        """
         start_time = time.time()
         try:
             df = self.df.copy()

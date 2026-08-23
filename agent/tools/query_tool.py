@@ -17,6 +17,11 @@ class QueryDataTool:
     """Read-only SQL tool powered by DuckDB in-memory engine with safety guardrails."""
 
     def __init__(self, df_or_path: Any):
+        """Initializes in-memory DuckDB database and registers the dataset table.
+        
+        Args:
+            df_or_path: CSV filepath string or active in-memory pandas DataFrame.
+        """
         if isinstance(df_or_path, str):
             self.df = pd.read_csv(df_or_path)
         elif isinstance(df_or_path, pd.DataFrame):

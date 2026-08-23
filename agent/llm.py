@@ -27,6 +27,12 @@ class LLMClient:
     """Base class and unified interface for LLM calls with structured JSON output parsing."""
 
     def __init__(self, model_name: Optional[str] = None, temperature: Optional[float] = None):
+        """Initializes the multi-provider LLM interface with model and temperature settings.
+        
+        Args:
+            model_name: Optional model identifier string (e.g. 'gpt-4o-mini', 'gemini-1.5-flash').
+            temperature: Sampling temperature for generation.
+        """
         self.model_name = model_name or config.default_model
         self.temperature = temperature if temperature is not None else config.temperature
         self.api_key = self._resolve_api_key()

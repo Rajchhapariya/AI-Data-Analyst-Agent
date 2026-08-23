@@ -15,6 +15,11 @@ class SummaryStatsTool:
     """Calculates comprehensive descriptive statistics for specified columns."""
 
     def __init__(self, df_or_path: Any):
+        """Initializes the summary statistics tool with a CSV filepath or active DataFrame.
+        
+        Args:
+            df_or_path: Filepath string or active in-memory DataFrame.
+        """
         if isinstance(df_or_path, str):
             self.df = pd.read_csv(df_or_path)
         elif isinstance(df_or_path, pd.DataFrame):
@@ -23,6 +28,14 @@ class SummaryStatsTool:
             raise ValueError("df_or_path must be a path string or pandas DataFrame")
 
     def execute(self, params: SummaryStatsParams) -> ToolExecutionResult:
+        """Computes parametric and non-parametric statistics (mean, median, std, IQR, skewness, quartiles).
+        
+        Args:
+            params: Validated SummaryStatsParams specifying target columns and optional grouping.
+            
+        Returns:
+            ToolExecutionResult containing structured statistical distributions.
+        """
         start_time = time.time()
         try:
             df = self.df

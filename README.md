@@ -250,8 +250,8 @@ python cli.py
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/yourusername/ai-data-analyst-agent.git
-cd ai-data-analyst-agent
+git clone https://github.com/Rajchhapariya/AI-Data-Analyst-Agent.git
+cd AI-Data-Analyst-Agent
 pip install -r requirements.txt
 ```
 

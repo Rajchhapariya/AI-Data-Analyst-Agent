@@ -317,3 +317,20 @@ For presenting a concise walkthrough of this project, refer to the step-by-step 
 
 ## 📄 License
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+
+---
+
+## 📸 System Demonstration & Evaluation Studio
+
+| Main Analytics & Pydantic Router | In-Memory Dataset Profile & Quality Audit |
+| :---: | :---: |
+| ![Main Analytics Interface](assets/analyst_landing_interface.png) | ![Dataset Profile & Quality Audit](assets/analyst_dataset_profile.png) |
+| *Constrained query routing with zero arbitrary Python execution* | *In-memory columnar metadata & null/type audit on 7,500 records* |
+
+| Ground-Truth Benchmark Evaluation Studio | Deterministic Plotly Visualization Execution |
+| :---: | :---: |
+| ![Benchmark Studio](assets/analyst_benchmark_eval.png) | ![Plotly Execution](assets/analyst_plotly_execution.png) |
+| *Quantitative harness: 100% tool selection accuracy across 20 test cases* | *Interactive DuckDB aggregation rendered via declarative Plotly scatter plot* |
+
+---

@@ -296,8 +296,6 @@ python -m agent.profiler
 
 ---
 
-## 🎬 Demo Recording Guide
-For presenting a concise walkthrough of this project, refer to the step-by-step 1–2 minute demonstration script in [`demo_recording_checklist.md`](demo_recording_checklist.md).
 
 ---
 

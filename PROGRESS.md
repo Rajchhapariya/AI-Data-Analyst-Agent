@@ -89,7 +89,6 @@
 - Created `tests/robustness_check.py` auditing 17 adversarial paraphrases, 3 multi-turn state tests, and 3 compound queries.
 
 ### 9. 1–2 Minute Interactive Demo Recording & Checklist
-- Created `demo_recording_checklist.md` with explicit timecoded segments, spoken highlights, and fallback queries.
 
 ### 10. Audit Remediation & Value-Level Correctness Harness
 - Implemented cell-by-cell matrix comparator `compare_query_results()` in `evaluation/evaluator.py`, expanded DuckDB denial tokens to 33, and verified 23/23 unit tests.
@@ -105,7 +104,6 @@
 - `.gitignore`: Production git ignore protecting secrets, cache, local video recordings, and scratch directories.
 - `LICENSE`: Permissive MIT Open-Source License.
 - `requirements.txt`: Curated Python dependencies including DuckDB, Plotly, LiteLLM, and Tabulate.
-- `demo_recording_checklist.md`: Step-by-step 1–2 minute recording script and pre-flight checklist.
 - `demo_script.md`: Spoken script and presenter talking points for screen demo.
 - `PROGRESS.md`: Chronological milestone tracker and engineering log.
 - `README.md`: Architecture blueprint, systems rationale, quantitative benchmark table, and setup guide.

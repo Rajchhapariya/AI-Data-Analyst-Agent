@@ -536,7 +536,7 @@ with tab_chat:
         }.get(tool_name, "badge-query")
 
         # ----------------------------------------------------------------------
-        # STEP 1: ROUTER DECISION & REASONING (Prominent Inspectable Card)
+        # Router decision and reasoning trace display
         # ----------------------------------------------------------------------
         st.markdown(f"""
         <div class="step-header">
@@ -552,7 +552,7 @@ with tab_chat:
         tool_data = trace.tool_result.data or {}
 
         # ----------------------------------------------------------------------
-        # STEP 2 & 3: TOOL EXECUTION & SYNTHESIS (HANDLES CLARIFY VS ANALYTICAL)
+        # Tool execution and response synthesis
         # ----------------------------------------------------------------------
         if tool_name == "clarify":
             # Intentional Disambiguation Card
@@ -636,7 +636,7 @@ with tab_chat:
                     elif "grouped_stats" in tool_data:
                         st.json(tool_data["grouped_stats"])
 
-            # Step 3: Faithful Synthesis
+            # Response synthesis and faithfulness validation
             st.markdown(f"""
             <div class="step-header" style="margin-top: 20px;">
                 <span>Step 3: Grounded Analyst Synthesis</span>

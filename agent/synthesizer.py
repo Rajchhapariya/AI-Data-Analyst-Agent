@@ -179,15 +179,15 @@ class ResponseSynthesizer:
 
             matched = False
             for r in raw_numbers:
-                # 1. Direct match with relative or absolute tolerance
+                # Direct numeric match within relative or absolute tolerance
                 if abs(n - r) < 0.05 or (r != 0 and abs(n - r) / abs(r) < 0.02):
                     matched = True
                     break
-                # 2. Percentage representation (e.g. raw 0.155 -> narrative 15.5%)
+                # Percentage representation (e.g. raw 0.155 -> narrative 15.5%)
                 if abs(n - (r * 100.0)) < 0.1 or (r != 0 and abs(n - (r * 100.0)) / abs(r * 100.0) < 0.02):
                     matched = True
                     break
-                # 3. Scaled representations (e.g. raw 2,179,369.32 -> narrative 2.18M)
+                # Scaled representations (e.g. raw 2,179,369.32 -> narrative 2.18M)
                 if r > 1000:
                     if abs(n - (r / 1e6)) < 0.05 or abs(n - round(r / 1e6, 2)) < 0.01:
                         matched = True

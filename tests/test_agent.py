@@ -244,28 +244,28 @@ def test_custom_csv_upload_ingestion_and_query():
 """
     df_uploaded = pd.read_csv(io.StringIO(custom_csv_content))
     
-    # 1. Validation checks (as executed in Streamlit sidebar)
+    # Validation checks matching UI sidebar
     assert not df_uploaded.empty
     assert len(df_uploaded) == 4
     assert len(df_uploaded.columns) == 6
     
-    # 2. Agent Initialization
+    # Agent initialization
     agent = DataAnalystAgent(dataset_path_or_df=df_uploaded)
     assert agent.profiler is not None
     
-    # 3. Profiler Execution
+    # Profiler execution
     profile = agent.profiler.profile()
     assert profile["dataset_info"]["row_count"] == 4
     assert profile["dataset_info"]["column_count"] == 6
     assert profile["columns"]["active"]["semantic_type"] != "numeric"
     assert profile["columns"]["salary"]["semantic_type"] == "numeric"
     
-    # 4. Schema context generation
+    # Schema context generation
     schema_ctx = agent.profiler.get_llm_schema_prompt_context()
     assert "salary" in schema_ctx
     assert "employee_id" in schema_ctx
     
-    # 5. Deterministic query execution
+    # Deterministic query execution
     q_result = agent.query_tool.execute(QueryDataParams(
         query="SELECT department, AVG(salary) AS avg_sal FROM dataset GROUP BY department",
         explanation="Average salary by department"

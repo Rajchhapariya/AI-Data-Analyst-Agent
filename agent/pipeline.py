@@ -48,16 +48,16 @@ class DataAnalystAgent:
             self.dataset_source = config.dataset_path
         self.llm = llm_client or default_llm_client
 
-                self.profiler = DatasetProfiler(self.dataset_source)
+        self.profiler = DatasetProfiler(self.dataset_source)
         # Pre-compute profile
         self.profiler.profile()
 
-                self.query_tool = QueryDataTool(self.dataset_source)
+        self.query_tool = QueryDataTool(self.dataset_source)
         self.chart_tool = PlotChartTool(self.dataset_source)
         self.stats_tool = SummaryStatsTool(self.dataset_source)
         self.clarify_tool = ClarifyTool()
 
-                self.router = AgentRouter(self.profiler, self.llm)
+        self.router = AgentRouter(self.profiler, self.llm)
         self.synthesizer = ResponseSynthesizer(self.llm)
 
     def ask(self, question: str) -> AgentTrace:

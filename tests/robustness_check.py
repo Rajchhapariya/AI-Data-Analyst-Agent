@@ -20,7 +20,7 @@ from agent.schema import ToolType
 
 
 # ==============================================================================
-# 1. Adversarial & Paraphrased Single-Turn Test Cases
+# Adversarial and paraphrased single-turn test cases
 # ==============================================================================
 TEST_CASES = [
     # Schema / Metadata Questions
@@ -155,7 +155,7 @@ TEST_CASES = [
 
 
 # ==============================================================================
-# 2. Multi-Turn Stateless Test Sequences
+# Multi-turn stateless test sequences
 # ==============================================================================
 MULTI_TURN_SEQUENCES = [
     {
@@ -201,7 +201,7 @@ MULTI_TURN_SEQUENCES = [
 
 
 # ==============================================================================
-# 3. Multi-Hop / Compound Reasoning Queries
+# Multi-hop compound reasoning queries
 # ==============================================================================
 COMPOUND_QUERIES = [
     {

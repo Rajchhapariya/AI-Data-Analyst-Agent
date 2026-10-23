@@ -1,18 +1,15 @@
 # AI Data Analyst Agent — Autonomous, Inspectable Analytics with Constrained Tool Calling
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Architecture](https://img.shields.io/badge/Architecture-Constrained%20Tools%20(ReAct%2FRouter)-purple.svg)]()
-[![Engine](https://img.shields.io/badge/SQL%20Engine-DuckDB%20(Read--Only)-yellow.svg)]()
-[![Evaluation Accuracy](https://img.shields.io/badge/Benchmark%20Accuracy-100.0%25-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-An auditable **AI Data Analyst Agent** designed for reliable natural-language analytics over relational and tabular datasets. 
+An auditable natural-language analytics engine over relational and tabular datasets.
 
-Instead of relying on unconstrained "LLM writes arbitrary Python `exec()` code" wrappers, this system reflects **deliberate systems engineering**: the LLM performs probabilistic routing and parameter extraction via inspectable Pydantic schemas, while analytical tools execute through constrained, deterministic procedures backed by an in-memory **DuckDB SQL engine**, declarative **Plotly visualization builder**, descriptive statistical profiler, and a post-synthesis **Numerical Faithfulness Guard** to detect ungrounded figures. Core agent reasoning is stateless across turns, while the Streamlit UI maintains session state for interaction and telemetry rendering.
+Rather than granting language models arbitrary Python `exec()` permissions, the system decouples semantic query parsing from execution: the LLM acts as a parameter extractor and router, while deterministic execution is delegated to an in-memory **DuckDB SQL engine** with an AST validation barrier that blocks mutating SQL statements, a declarative **Plotly visualization builder**, and an automated numerical faithfulness auditor that cross-checks cited figures against raw columnar aggregates.
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 1. [Problem Statement & Motivation](#-problem-statement--motivation)
 2. [Architectural Blueprint](#-architectural-blueprint)
 3. [Key Engineering Decisions (Why Constrained Tools?)](#-key-engineering-decisions-why-constrained-tools)
@@ -27,7 +24,7 @@ Instead of relying on unconstrained "LLM writes arbitrary Python `exec()` code" 
 
 ---
 
-## 🎯 Problem Statement & Motivation
+## Problem Statement & Motivation
 
 Many commercial LLM data analyst demos follow an insecure and brittle design: they prompt an LLM to generate arbitrary Python/Pandas code and execute it directly via `eval()` or `exec()`. In enterprise environments and academic settings, this pattern fails due to four critical flaws:
 
@@ -40,7 +37,7 @@ Many commercial LLM data analyst demos follow an insecure and brittle design: th
 
 ---
 
-## 🏗️ Architectural Blueprint
+## System Architecture
 
 ```
                           ┌───────────────────────────┐
@@ -96,7 +93,7 @@ Many commercial LLM data analyst demos follow an insecure and brittle design: th
 
 ---
 
-## ⚖️ Key Engineering Decisions (Why Constrained Tools?)
+## Architectural Trade-Offs: Constrained Tools vs. Arbitrary Execution
 
 | Dimension | Arbitrary Code Generation (`exec()`) | Our Constrained Tool Architecture | Engineering Rationale |
 | :--- | :--- | :--- | :--- |
@@ -108,7 +105,7 @@ Many commercial LLM data analyst demos follow an insecure and brittle design: th
 
 ---
 
-## 📊 Dataset & In-Memory Profiling
+## Dataset & Profiling Pipeline
 
 The agent operates over a realistic **Global Retail / Superstore Sales** dataset containing **7,500 transactions** across 4 years (2021–2024), 4 global regions, 3 categories, 17 sub-categories, and 40 enterprise customers.
 
@@ -121,7 +118,7 @@ Before receiving user queries, the agent computes an in-memory schema and data q
 
 ---
 
-## 🛠️ The 4 Constrained Execution Tools
+## Execution Tool Specifications
 
 1. **`query_data` (DuckDB Read-Only SQL Engine)**:
    - Registers the dataset as an in-memory DuckDB table (`dataset`).
@@ -146,7 +143,7 @@ Before receiving user queries, the agent computes an in-memory schema and data q
 
 ---
 
-## 🛡️ Safety Guardrails & Anti-Hallucination Pipeline
+## Guardrails & Verification Pipeline
 
 ### 1. SQL Injection, Mutation & File Access Guard
 ```python
@@ -176,7 +173,7 @@ To catch ungrounded or hallucinated figures during text generation:
 
 ---
 
-## 📈 Quantitative Evaluation & Benchmark Results
+## Experimental Evaluation & Benchmark Results
 
 The system includes a 20-question Ground Truth benchmark dataset (`evaluation/benchmark_dataset.json`) spanning lookups, multi-level aggregations, regional comparisons, chart plotting, descriptive statistics, and ambiguous prompts.
 
@@ -205,7 +202,7 @@ The system includes a 20-question Ground Truth benchmark dataset (`evaluation/be
 
 ---
 
-## 🔬 Empirical Error Analysis & Failure Studies
+##  Empirical Error Analysis & Failure Studies
 
 For complete technical deep-dives into edge cases and trade-offs, see [`evaluation/error_analysis.md`](evaluation/error_analysis.md).
 
@@ -228,14 +225,14 @@ For complete technical deep-dives into edge cases and trade-offs, see [`evaluati
 
 ---
 
-## 💻 User Interfaces
+##  User Interfaces
 
 ### 1. Interactive Streamlit Web Application (`app/streamlit_app.py`)
 - **Tab 1: Agent Analyst Chat**: Conversational interface with quick-prompt chips, step-by-step reasoning drawer, Plotly chart rendering, interactive SQL data tables, and faithfulness badges.
 - **Tab 2: Dataset Profiler & Quality**: KPI metric cards (Revenue, Profit, Transactions, Memory), schema table with missing value audit, and dynamic column distribution charts.
 - **Tab 3: Benchmark & Evaluation Studio**: 1-click evaluation runner, Precision/Recall/F1 tables, and question-level pass/fail audits.
-- **📁 Dynamic CSV Uploader (Sidebar)**: Drag-and-drop any custom CSV dataset to dynamically profile, query, plot, and summarize custom data with automated validation against empty or malformed files.
-- **📥 1-Click Markdown Report Export**: Download complete inspectable telemetry (`AgentTrace`), dimensional audits, raw SQL outputs, and verified executive narratives as clean `.md` reports.
+- ** Dynamic CSV Uploader (Sidebar)**: Drag-and-drop any custom CSV dataset to dynamically profile, query, plot, and summarize custom data with automated validation against empty or malformed files.
+- ** 1-Click Markdown Report Export**: Download complete inspectable telemetry (`AgentTrace`), dimensional audits, raw SQL outputs, and verified executive narratives as clean `.md` reports.
 
 ```bash
 streamlit run app/streamlit_app.py
@@ -251,7 +248,7 @@ python cli.py
 
 ---
 
-## 🚀 Setup & Quickstart Guide
+## Setup & Quickstart Guide
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -299,7 +296,7 @@ python -m agent.profiler
 
 ---
 
-## 💡 What I Learned & Future Work
+## Technical Retrospective & Future Scope
 
 ### Key Takeaways:
 1. **Constrained Tools Beat Open Code Generation**: Pre-built tools eliminate security sandboxing complexity, reduce runtime latency by ~60%, and ensure deterministic aggregations.
@@ -313,13 +310,13 @@ python -m agent.profiler
 
 ---
 
-## 📄 License
+##  License
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 
 ---
 
-## 📸 System Demonstration & Evaluation Studio
+##  System Demonstration & Evaluation Studio
 
 | Main Analytics & Pydantic Router | In-Memory Dataset Profile & Quality Audit |
 | :---: | :---: |

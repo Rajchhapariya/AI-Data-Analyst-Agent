@@ -48,19 +48,16 @@ class DataAnalystAgent:
             self.dataset_source = config.dataset_path
         self.llm = llm_client or default_llm_client
 
-        # Initialize dataset profiler
-        self.profiler = DatasetProfiler(self.dataset_source)
+                self.profiler = DatasetProfiler(self.dataset_source)
         # Pre-compute profile
         self.profiler.profile()
 
-        # Initialize the 4 constrained tools
-        self.query_tool = QueryDataTool(self.dataset_source)
+                self.query_tool = QueryDataTool(self.dataset_source)
         self.chart_tool = PlotChartTool(self.dataset_source)
         self.stats_tool = SummaryStatsTool(self.dataset_source)
         self.clarify_tool = ClarifyTool()
 
-        # Initialize router and synthesizer
-        self.router = AgentRouter(self.profiler, self.llm)
+                self.router = AgentRouter(self.profiler, self.llm)
         self.synthesizer = ResponseSynthesizer(self.llm)
 
     def ask(self, question: str) -> AgentTrace:
@@ -70,10 +67,10 @@ class DataAnalystAgent:
         """
         start_time = time.time()
         
-        # Step 1: Routing & Planning (with inspectable reasoning)
+        # Semantic query routing and parameter extraction
         decision: RouterDecision = self.router.plan_and_route(question)
 
-        # Step 2: Tool Dispatching
+        # Deterministic tool dispatch
         tool_result: ToolExecutionResult
         try:
             if decision.tool == ToolType.QUERY_DATA:
@@ -103,7 +100,7 @@ class DataAnalystAgent:
                 execution_time_ms=0.0
             )
 
-        # Step 3: Response Synthesis & Numerical Faithfulness Guard
+        # Response synthesis and numerical verification
         narrative, faith_passed, faith_notes = self.synthesizer.synthesize(
             user_query=question,
             decision=decision,
@@ -112,7 +109,7 @@ class DataAnalystAgent:
 
         total_latency = round((time.time() - start_time) * 1000, 2)
 
-        # Step 4: Construct Full Telemetry Trace
+        # Construct inspectable telemetry trace
         trace = AgentTrace(
             query=question,
             router_decision=decision,

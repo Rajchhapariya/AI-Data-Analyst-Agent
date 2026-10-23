@@ -12,7 +12,7 @@ from agent.schema import ToolType, ToolExecutionResult, SummaryStatsParams
 
 
 class SummaryStatsTool:
-    """Calculates comprehensive descriptive statistics for specified columns."""
+    """Calculates descriptive statistics for specified columns."""
 
     def __init__(self, df_or_path: Any):
         """Initializes the summary statistics tool with a CSV filepath or active DataFrame.

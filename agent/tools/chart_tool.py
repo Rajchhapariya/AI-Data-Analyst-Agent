@@ -152,8 +152,7 @@ class PlotChartTool:
                 }.get(agg, "sum")
 
                 processed_df = df.groupby(group_keys, as_index=False)[y_col].agg(agg_func)
-                # Sort for clean visualization
-                if chart_type == ChartType.LINE:
+                                if chart_type == ChartType.LINE:
                     processed_df = processed_df.sort_values(by=x_col)
                 elif chart_type == ChartType.BAR and not group_col:
                     processed_df = processed_df.sort_values(by=y_col, ascending=False).head(20)

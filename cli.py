@@ -149,16 +149,16 @@ def display_trace(trace: AgentTrace):
     }
     color = tool_colors.get(tool_val, "cyan")
 
-    # 1. Step-by-Step Reasoner Panel
+    # Reasoner panel display
     reasoning_content = (
         f"[bold white]Step 1: Router Planning & Reasoning[/bold white]\n"
         f"[dim]{trace.router_decision.reasoning}[/dim]\n\n"
         f"[bold white]Step 2: Selected Constrained Tool[/bold white]: [{color} bold]{tool_val}[/{color} bold]\n"
         f"[bold white]Tool Parameters[/bold white]: [dim]{trace.router_decision.parameters}[/dim]"
     )
-    console.print(Panel(reasoning_content, title="🔍 Inspectable Execution Trace", border_style=color))
+    console.print(Panel(reasoning_content, title="[TRACE] Execution Trace", border_style=color))
 
-    # 2. If SQL query tool was used, format raw SQL and table using canonical 'query' parameter
+    # SQL query output table formatting
     if tool_val == "query_data":
         sql_query = trace.router_decision.parameters.get("query", "")
         if sql_query:
@@ -167,7 +167,7 @@ def display_trace(trace: AgentTrace):
 
         rows = trace.tool_result.data.get("rows", []) if (trace.tool_result.data and isinstance(trace.tool_result.data, dict)) else []
         if rows and len(rows) > 0:
-            console.print(f"\n[bold cyan]📋 Raw Data Output ({len(rows)} rows):[/bold cyan]")
+            console.print(f"\n[bold cyan][DATA] Raw Output ({len(rows)} rows):[/bold cyan]")
             cols = list(rows[0].keys())
             res_table = Table(border_style="dim", show_header=True)
             for c in cols:
@@ -180,16 +180,16 @@ def display_trace(trace: AgentTrace):
 
     elif tool_val == "plot_chart":
         spec = trace.tool_result.data.get("chart_spec", {}) if (trace.tool_result.data and isinstance(trace.tool_result.data, dict)) else {}
-        console.print(f"\n[bold magenta]📈 Rendered Plotly {spec.get('chart_type', 'chart').upper()}[/bold magenta]: [white]'{spec.get('title', '')}'[/white]")
+        console.print(f"\n[bold magenta][CHART] Rendered Plotly {spec.get('chart_type', 'chart').upper()}[/bold magenta]: [white]'{spec.get('title', '')}'[/white]")
         console.print("[dim](Interactive chart is viewable in the Streamlit Web App: `streamlit run app/streamlit_app.py`)[/dim]")
 
-    # 3. Main Synthesized Answer
+    # Synthesized narrative response
     console.print("\n" + "=" * 60)
-    console.print(Panel(Markdown(trace.narrative_response), title="💡 Analyst Response", border_style="bold green"))
+    console.print(Panel(Markdown(trace.narrative_response), title="[RESPONSE] Analyst Response", border_style="bold green"))
 
-    # 4. Numerical Faithfulness Guard Badge
+    # Numerical faithfulness guard status badge
     if trace.numerical_validation_passed:
-        console.print(" [bold green]🛡️ Numerical Faithfulness Guard: PASSED[/bold green] [dim](All cited numbers verified against tool output)[/dim]")
+        console.print(" [bold green][GUARD] Numerical Faithfulness: PASSED[/bold green] [dim](All cited numbers verified against tool output)[/dim]")
     else:
         console.print(f" [bold red]⚠️ Numerical Faithfulness Guard: FLAG[/bold red] [dim]({trace.numerical_validation_notes})[/dim]")
 
@@ -216,7 +216,7 @@ def run_cli():
             # Command routing
             cmd_lower = user_input.lower()
             if cmd_lower in (":exit", ":quit", "exit", "quit", "q"):
-                console.print("\n[bold yellow]👋 Exiting AI Data Analyst Agent. Goodbye![/bold yellow]\n")
+                console.print("\n[bold yellow]Exiting AI Data Analyst Agent.[/bold yellow]\n")
                 break
                 
             elif cmd_lower in (":help", "help", "h"):
@@ -253,7 +253,7 @@ def run_cli():
             display_trace(trace)
 
         except KeyboardInterrupt:
-            console.print("\n[bold yellow]👋 Interrupted. Exiting...[/bold yellow]\n")
+            console.print("\n[bold yellow]Interrupted. Exiting...[/bold yellow]\n")
             break
         except Exception as e:
             console.print(f"[bold red]❌ Error: {e}[/bold red]\n")
